@@ -1,0 +1,54 @@
+% ----------------------------------------------------------
+% Introdução 
+% Capítulo sem numeração, mas presente no Sumário
+% ----------------------------------------------------------
+
+\chapter*[Introdução]{Introdução}
+\addcontentsline{toc}{chapter}{Introdução}
+
+No passado eram veículos eram, em grande parte, máquinas mecânicas, com poucos recursos eletrônicos. Hoje em dia, diversos avanços foram feitos nos carros modernos, e estes já estão equipados com variadas tecnologias assistentes como controle de tração, freios ABS e de emergência, piloto automático, entre outros recursos que dependem de sensores e que tomam decisões que controlam parcialmente o veículo, visando segurança e conforto ao condutor. 
+
+Veículos que possuem as assistências mencionadas acima comumente são chamados de "autônomos", porém neste artigo trataremos por "carro autônomo" um veículo que seja capaz de conduzir-se sem depender de um humano. De acordo com o padrão SAE J3016 a autonomia de veicular é dividida em níveis que vão do zero ao cinco, os recursos citados são no máximo nível 2, um veículo para ser "autônomo" seria de nível 3 ou maior (\citeonline{SAE2014}), porém para atingir este grau de autonomia é necessário mais do que sensores e controladores que dão instruções diretas ao carro.
+
+\begin{comment}
+Inserir aqui um parágrafo sobre o estado atual dos carros autônomos na indústria e no mercado
+\end{comment}
+
+Nas duas últimas décadas houve um aumento na presença de tecnologias como Inteligência Artificial e \textbf{Aprendizado de Máquina} no cotidiano das pessoas. Corretores ortográficos, reconhecimento facial, algoritmos de recomendação de leitura, música ou compra são alguns exemplos de diversos outros que até então estavam apenas disponíveis em lugares específicos com laboratórios de pesquisa, mas agora já são amplamente aplicadas. 
+
+Existem três paradigmas de aprendizado de máquina: \textbf{aprendizado supervisionado}, \textbf{não supervisionado} e \textbf{aprendizado por reforço}. Este último aborda aprendizado que envolvam exercer uma atividade, nele, o \textbf{agente} durante seu treino, aprimora uma tarefa após várias tentativas e erro onde é premiado quando age corretamente e penalizado caso contrário. Este artigo introduzirá os dois primeiros paradigmas e discorrerá mais detalhadamente sobre o \textbf{AR}. Embora o \textbf{AS} também é necessário para a tarefa, ele é mais usado em reconhecimento de elementos no ambiente, algo que está fora do escopo deste projeto.
+
+Quando tenta-se criar uma automato que exerça uma atividade complexa como condução de um veículo, a abordagem clássica que usa algoritmos com condicionais e instruções direta é insuficiente para tal, isto deve-se ao fato de que é inviável criar manualmente uma tabela de comandos dado certas condições, a lista tenderia ao infinito. Utilizando de um paradigma de AM como \textbf{aprendizado por reforço} se faz necessário pois o automato irá, após sucessivas tentativas, dominar a técnica de conduzir um veículo.
+
+\begin{comment}
+    Introduzir brevemente o PPO e SAC aqui
+\end{comment}
+
+Este artigo propõe-se a apresentar um estudo do que é necessário para criar um agente condutor de um veículo dentro de um simulador que saiba percorrer um dado trajeto em um ambiente urbano. Será analisado como modelar um simulador, como quais sensores o veículo deve possuir, quais observações deve fazer do ambiente para evitar colisões, entre outros.
+
+
+\section*{Justificativa}\label{sec:justificativa}
+\addcontentsline{toc}{section}{Justificativa}
+Uma das maiores causas de morte no Brasil é por conta de acidentes de trânsito, chegando a um total de 43 mil óbitos em um único ano (CARVALHO, 2016), é sabido também que grande causa dessas mortes é por falha humana por parte do condutor. Tendo em vista o avanço tecnológico na área de Inteligência Artificial vemos que vem se tornando viável o desenvolvimento de um modelo que seja capaz de conduzir um veículo automotivo em ambientes urbanos, dessa forma poderíamos ter em vias públicas condutores que não se distraiam e não cometam infrações de trânsitos.
+
+
+\section*{Objetivos}\label{sec:objetivos}
+\addcontentsline{toc}{section}{Objetivos}
+O objetivo deste projeto é criar uma simulação que se aproxime o máximo possível a um cenário real e com isso analisar todos os elementos que são necessários para que o agente aprende a exercer sua tarefa mais central: conduzir o veículo de sua origem até seu destino.
+\begin{itemize}
+    \item Analisar quantos sensores o veículo deve possuir, como devem ser posicionados. 
+    \item Como a adição gradual de cada elemento de trânsito afeta o agente (elementos como outros veículos, semáforos e pedestres)
+    \item Diferença entre os algoritmos de otimização de política \textbf{SAC} e \textbf{PPO} afetam a convergência do treino e o resultado final
+\end{itemize}
+
+\section*{Etapas do estudo}\label{sec:etapas}
+\addcontentsline{toc}{section}{Etapas do estudo}
+Podemos abstrair o treino em três segmentos: \textbf{ambiente}, \textbf{agente} e \textbf{algoritmo}. Ambiente engloba qualquer coisa que o agente interage, por exemplo, o cenário urbano como as ruas e calçadas, e uma inclusão de elementos de trânsito como outros veículos, semáforos ou pedestres seriam alterações no ambiente. O segundo segmento se refere ao aprendiz, alterações feitas nas informações recebidas pelo agente como distância dos obstáculos mais próximos, velocidade do veículo, distância e localização do destino, etc, mudanças feitas nestas propriedades ou em semelhantes são alterações no agente. Finalmente, algoritmo se refere ao esquema dos algoritmos usados (PPO ou SAC) e seus hiper-parâmetros.
+
+A primeira etapa deste estudo o agente terá de aprender a conduzir como se estivesse sozinho, isso permitirá entender melhor o que é necessário para fazer com que o aprendiz precisa para percorrer qualquer trajeto dado como objetivo. Isto é o ambiente inicialmente será apenas uma cidade vazia e a cada etapa deve-se aumentar a complexidade dele visando se aproximar da realidade. Em cada etapa as mudanças devem seguir a ordem dos segmentos, com uma certa flexibilidade, ou seja, um aumento de realismo no ambiente deve levar a alterações sensoriais no agente para se adaptar ao novo cenário e calibrar os hiper-parâmetros dos algoritmos usados.
+
+Em cada etapa então deve-se:
+\begin{itemize}
+    \item Analisar quantos e como serão dispostos os sensores o veículo deve possuir;
+    \item Como é o desempenho usando cada algoritmo (PPO ou SAC), como as alterações dos hiper-parâmetros afetam o treino e a convergência/otimização do comportamento;
+\end{itemize}

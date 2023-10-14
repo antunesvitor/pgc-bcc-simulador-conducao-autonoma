@@ -1,0 +1,11 @@
+\chapter{Estado da Arte}\label{cap:estArte}
+Neste capítulo será discutido e analisados trabalhos que envolve a criação de agentes inteligentes em ambientes virtuais, a primeira seção será dedicada àqueles que não utilizam o pacote ML-Agents. A outra seção, porém será visto projetos que se utilizam da biblioteca da Unity3D.
+
+\section*{CARLA e outros}
+Um projeto muito similar ao que este artigo se propõe a fazer é o \textbf{CARLA}. Car Learning to Act (CARLA) é um ambiente de código aberto de treinamento condução autônoma de veículos terrestres, foi desenvolvido usando a \textbf{Unreal Engine 4}. A simulação inclui clima dinâmico, uso de visão computacional, obstáculos dinâmicos como carros e pedestres além de visual fotorrealista. Quanto ao treinamento utiliza-se de três métodos: um fluxo modular, aprendizado por imitação e aprendizado por reforço, treinaram os agentes em cada método em 4 níveis diferentes de dificuldade, e então postos a testes em climas e uma cidade distinta. O resultado foi surpreendente, com o aprendizado por reforço tendo um desempenho muito inferior aos outros dois métodos (\citeonline{pmlr-v78-dosovitskiy17a}).
+
+
+\section*{Criação de agentes inteligentes utilizando ML-Agents}\label{sec:primTrab}
+O projeto desenvolvido por (\citeonline{s21020492}) também envolve um carro autônomo, apesar de não envolver um ambiente urbano e sim uma pista em formato de 8 (para treino) e outra com começo e fim (para teste). O trabalho analisa o dados da dirigibilidade comparando um humano em um simulador, um agente criado usando aprendizado por imitação e outro agente utilizando \textbf{RL}. 
+
+Outro trabalho foi feito por (\citeonline{mexas2021}), que também se trata de um veículo autônomo, mas desta vez é um veleiro. Neste projeto, o autor faz um estudo comparativo dos algoritmos \textbf{PPO} e \textbf{SAC} para aprendizado por reforço, e os algoritmos \textbf{BC} e \textbf{GAIL} para \textbf{IL}. O ambiente dele leva em conta a ação do vento sobre o veleiro e ao analisar os dados conclui que o primeiro algoritmo de \textbf{RL} é o que apresentou o melhor desempenho.
