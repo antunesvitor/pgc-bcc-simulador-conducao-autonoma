@@ -1,7 +1,7 @@
 % ---
 \chapter{Fundamentação teórica}
 % ---
-Neste capítulo será introduzido os conceitos e fundamentos das teorias e tecnologias utilizadas neste projeto. Será abordado os paradigmas de aprendizado de máquina com foco em aprendizado por reforço. Também abordará sobre autonomia de veículos como o que define um carro autônomo e os diferentes níveis de autonomia. Por fim, o que é um motor de jogo e a principal ferramenta que usaremos para desenvolver um ambiente simulado, a Unity 3D.
+Neste capítulo será introduzido os conceitos e fundamentos das teorias e tecnologias utilizadas neste projeto. Será abordado sobre autonomia de veículos como o que define um carro autônomo e os diferentes níveis de autonomia. Também abordará o que é um motor de jogo e a principal ferramenta que usaremos para desenvolver um ambiente simulado, a Unity 3D. Por fim, definição de IA, os paradigmas de aprendizado de máquina com um aprofundamento em aprendizado por reforço.
 
 \section{Veículos autônomos}
 A SAE (Society of Automotive Engineers) define 6 níveis de autonomia para veículos, do zero ao cinco (\citeonline{SAE2014}). O primeiro, nível zero, não possui automação de direção alguma, é limitado a apenas a tecnologias de assistência como freios ABS ou freio automático emergencial. Um veículo com automação de nível um já passa a possuir alguns recursos que ajudam na direção, como controle para manter o carro na via, controle de velocidade a fim de manter distância de outro veículo a frente. Os níveis dois e três são definidos por, respectivamente, "direção parcialmente automática" e "direção automática condicional", a diferença de ambos pode ser bem sútil, pois em ambos os casos a automação teria o controle do volante, acelerador e freio, no primeiro seria apenas para atividades mais simples, como dirigir na estrada mantendo a velocidade e distâncias, enquanto no nível três o veículo assumiria o controle por um período, podendo até fazer manobras mais avançadas, como ultrapassar um automóvel mais lento a frente. Em ambos os níveis ainda é necessário a atenção máxima do condutor para assumir o controle quando for necessário.
@@ -36,7 +36,7 @@ Dentre as principais janelas da interface da Unity3D, temos: hierarquia, projeto
    \centering
    \includegraphics[scale=0.2]{figs/interface-unity3d-indicadores.png}
     \caption{Interface da Unity3D. A janela 1 é a hierarquia, 2 é a janela de projeto, 3 é visualização da cena e 4 é o inspetor}
-    \label{fig:prefixt}
+    %\label{fig:prefixt}
  \end{figure}
 
 A janela de projeto estão os arquivos do projeto, é um diretório do projeto criado pela Unity3D onde deve conter arquivos de efeitos sonoros, códigos-fonte do desenvolvedor, fontes, modelos 2D e 3D, texturas, etc. A visualização da cena é uma janela que permite o desenvolvedor ter uma noção visual da disposição dos \textit{GameObjects}, desta forma ele consegue posicioná-los mais apropriadamente, também consegue ver se a dimensão e escala deles estão coerentes. 
@@ -62,23 +62,79 @@ Há dois paradigmas em AM que valem a pena ser mencionados brevemente antes de i
 % ---
 \section{Aprendizado por reforço}
 % ---
-No aprendizado por reforço o objetivo é sempre fazer com que o agente aprenda a executar uma tarefa, se trata de ensiná-lo a como fazer. O agente está inserido em um ambiente e a ele é dado um objetivo, com isso ele deve aprender a tomar as decisões corretas nas situações apropriadas visando seu propósito. O aprendiz não é instruído sobre quais ações tomar em dadas circunstâncias, ao invés disso o agente aprenderá a tomar as decisões com base na orientação do treinamento, que envolve em premia-lo quando agir idealmente ou penaliza-lo caso contrário. Esse parecer que o agente recebe é um valor numérico a ser maximizado por ele, e o dever do projetista é programar os critérios que decidem não somente o que é recompensador ou penalizador, mas o quanto é.
+No aprendizado por reforço o objetivo é sempre fazer com que o agente aprenda a executar uma tarefa, se trata de ensiná-lo a como fazer. O agente está inserido em um ambiente e a ele é dado um objetivo, com isso ele deve aprender a tomar as decisões corretas nas situações apropriadas visando seu propósito. O aprendiz não é instruído sobre quais ações tomar em dadas circunstâncias, ao invés disso o agente aprenderá a tomar as decisões com base na orientação do treinamento, que envolve em premiá-lo quando agir idealmente ou penalizá-lo caso contrário. Esse parecer que o agente recebe é um valor numérico a ser maximizado por ele, e o dever do projetista é programar os critérios que decidem não somente o que é recompensador ou penalizador, mas o quanto é.
 
-\subsection{Elementos do Aprendizado por Reforço}
-Além do agente-aprendiz que há em outras formas de aprendizado mencionadas anteriormente, este paradigma possui outros elementos principais que devem ser identificados quando tenta-se resolver qualquer problema utilizando aprendizado por reforço. Nesta seção cobrirá em mais detalhes os seguintes componentes: a \textbf{política}, o \textbf{sinal de recompensa} e a \textbf{função valor}.
+A seguir será formalizado como esse proceso ocorre, toda esta seção é baseada em \citeonline{rl-sutton-barto}, exceto quando abordarmos sobre os algoritmos de otimização de política. É importante esclarecer aqui que a formalização a seguir se trata de tipos de problemas mais simples do que iremos lidar neste projeto, porém essa introdução é necessária para compreender os conceitos mais avançados serão vistos posteriormente.
+
+\subsection{Processo de tomada de decisão}
+Neste paradigma, o \textit{agente} toma uma decisão $A_t$ que afeta o \textit{ambiente} o qual está inserido, que retorna a ele um estado $S_{t+1}$ e uma recompensa $R_{t+1}$. O conjunto $S$ representa todos os estados possíveis do ambiente, cada estado $s$ representa toda a observação que o agente tem do sistema. 
 
 \begin{figure}[h]
    \centering
    \includegraphics[scale=0.75]{figs/RL-diagram.drawio.png}
     \caption{diagrama da interação do agente com o ambiente. Adaptado de \citeonline{rl-sutton-barto}}
-    \label{fig:prefixt}
+    %\label{fig:prefixt}
  \end{figure}
 
-A \textit{política} é o mapeamento do estado percebido do ambiente em ações a serem tomadas naquele estado, é a fórmula que determina qual a decisão correta dadas as observações do ambiente. A política pode ser estocástica, especificando probabilidades para cada ação, algumas maiores que outras.
+Usando o jogo da velha de exemplo, o conjunto $S$ representaria todas as configurações possíveis do tabuleiro, um estado $S_t \in S$ seria um configuração específica, sendo que $S_0$ poderia representar o tabuleiro vazio antes de qualquer jogada. Uma ação $a \in A$ seria uma jogada e por fim $t \in \{0,1,2,3,..., T\}$ as etapas do jogo até a etapa final $T$.
 
-A recompensa é o número a ser maximizado pelo agente aprendiz, ele indica se o mesmo cumpriu ou está se comportando como deveria. A cada passo, o agente ajusta suas ações com base no sinal de recompensa recebido, se o mesmo é positivo ele deve entender que as ações que tomou foram apropriadas, caso contrário deve buscar mudar seu comportamento a fim de buscar recompensas maiores. Punir em excesso o agente por cometer erros, na intenção de ter um treino mais rigoroso, pode acabar deixando-o sem orientação do que fazer, por outro lado, recompensá-lo demasiadamente pode fazê-lo com que aja inapropriadamente sem se atentar às consequências.
+Essa sequência de estados, ações e recompensas é chamada de \textit{trajetória} e pode ser escrita da seguinte forma:
 
-O valor de um estado no ambiente é o tanto de recompensa que o agente espera ganhar no futuro partindo daquele estado. Se o sinal de recompensa indica o que é bom em curto prazo, o valor do estado indica o quanto o agente pode ganhar no longo prazo, talvez \textit{vale} mais a ele ganhar uma recompensa menor se no longo prazo ele receber um montante maior. Recompensas são o objetivo primário, enquanto valores, que são predições de recompensas futuras, são secundários. Se não há recompensas não haverá valores, porém é este último que requer mais atenção de um pesquisador treinando um agente via aprendizado por reforço. Enquanto que recompensas são fáceis de definir, pois basta punir quando algo indesejado ocorrer e premiar caso contrário, maximizar o valor é mais complexo, o agente pode criar o vício de fazer o errado para ganhar recompensas maiores. E é de interesse do aprendizado que o agente tome decisões que leve a maiores valores e não maiores recompensas.
+\begin{equation} \label{trajectory}
+   S_0, A_0, R_1, S_1, A_1, R_2, S_2, A_2, ... , R_n, S_n
+\end{equation}
+
+Esse sistema é conhecido como \textbf{Processo de Decisão de Markov} (\textbf{MDP}, do inglês Markov Decision Process), é uma formalização de problemas que possuem um número \textit{finito} de estados, ações e recompensas, podendo ser \textbf{estocástico}, isto é, não é possível antecipar com exatidão qual será $S_{t+1}$ dado $S_t$ e $A_t$ e de \textbf{tempo discreto}. Dito isso, temos a seguinte distribuição de probabilidade $p$ de um estado $s'$ ocorrer após o agente tomar a decisão $a$ no estado $s$:
+
+\begin{equation} \label{p-definition}
+   p(s', r | s, a) \doteq Pr\{S_t = s', R_t = r | S_{t-1} = s, A_{t-1} = a\}
+\end{equation}
+
+E por ser uma distribuição de probabilidades, temos: 
+
+\begin{equation} \label{p-sum}
+   \sum_{s' \in S}^{} \sum_{r \in R}^{}p(s', r | s, a) = 1 \text{, para todo } s \in S, a \in A(s) 
+\end{equation}
+
+Sendo $A(s)$ é o conjunto de todas as ações que podem ser tomadas no estado $s$.
+
+Em um MDP, a probabilidade de cada valor de $S_t$ e $R_t$ depende \textit{apenas} de $S_{t-1}$ e $A_{t-1}$ e de nenhum outro estado anterior a este. Então um estado $S_t$ contém toda a informação de interações passadas entre o agente e o ambiente, essa caraterística do estado é chamada de \textbf{propriedade de Markov}. 
+
+O comportamento do agente é moldado pelas recompensas que recebe a cada ação que toma, este sinal de recompensa é o que indica se o agente está executando a tarefa apropriadamente ou não. Diferente dos estados $S$ e ações $A$, que podem assumir qualquer forma, o conjunto $R$ é um conjunto de números reais: $r \in R \in \mathbb{R}$. A fórmula que deve ser maximizada é chamada de \textbf{retorno esperado}, é denotado por $G_t$:
+
+\begin{equation} \label{expected-return}
+   G_t = R_{t+1} + R_{t+2} + R_{t+3} + ... + R_{T},
+\end{equation}
+
+onde $T$ é a última etapa que ocorre quando se atinge um \textbf{estado terminal}. Nem todas as tarefas possuem um estado terminal, mas as que têm são chamadas de \textbf{tarefas episódicas}. Usando o exemplo do jogo da velha, podemos entender que cada estado que define um vencedor ou define um empate onde nenhuma jogada mais pode ser feita, seja um estado terminal. Em contraste, se uma tarefa não possui fim, é chamada de \textbf{tarefa contínua}. Como tarefas contínuas teriam $T = \infty$ logo $G_t = \infty$ e se torna impossível calcular por um computador. Então para isso é aplicado um desconto $\gamma$ na equação onde $0 \leqslant \gamma \leqslant 1$:
+
+\begin{equation}
+   G_t \doteq G_t = R_{t+1} + \gamma R_{t+2} + \gamma^{2} R_{t+3} + ... = \sum_{k = 0}^{\infty}\gamma^{k}R_{t+k+1}
+\end{equation}
+
+A \textbf{constante de desconto} $\gamma$ representa o valor de recompensas futuras, caso $\gamma = 0$ o agente apenas se preocuparia em maximizar $R_t$ independente dos valores de recompensas futuras. Quando se aplica um $\gamma$ se aproxima de 1, mais se valoriza estados futuros e aumenta as chances de o agente tomar uma ação que tenha uma recompensa imediata menor mas maiores recompensas futuras. 
+
+Com isso chegamos a uma das partes centrais do RL, que é \textbf{funções valores}. Uma função valor é o que determina o quão importante é para o agente estar naquele estado, isto é, seu valor que é determinado pelo retorno esperado de recompensas futuras daquele estado. Para poder calcular isso é preciso saber como o agente opera, logo, é preciso saber sua \textbf{política}.
+
+A \textbf{política} (representada por $\pi$) é o mapeamento do estado para a ação a ser tomada, formalmente, $\pi(a|s)$ é a probabilidade de se tomar a ação $a$ no estado $s$. Aprendizado por reforço é, basicamente, aprimorar a política do agente e a mesma tende a mudar de uma trajetória para outra (caso episódico) ou até mesmo dentro de uma trajetória.
+
+A definição de uma funcão $v$ valor do estado $s$ sob uma política $\pi$ é:
+
+\begin{equation} \label{state-value-function}
+   v_\pi(s) \doteq \mathbb{E}_\pi[G_t|S_t=s]
+\end{equation}
+
+Da mesma forma, pode-se estimar o valor de uma ação, para isso há a \textbf{função valor da ação} $q_\pi(s,a)$, definida da seguinte forma:
+
+\begin{equation} \label{action-value-function}
+   q_\pi(s,a) \doteq \mathbb{E}_\pi[G_t|S_t=s,A_t=a]
+\end{equation}
+
+As funções valores $v_\pi$ e $q_\pi$ podem ser estimadas através de experiência. Pode-se começar com uma política que basicamente atribui a mesma probabilidade para qualquer ação em qualquer estado, conforme as recompensas vão sendo aplicadas o valor esperado do estado e da ação serão atualizados.
+
+Resolver uma tarefa utilizando-se de aprendizado por reforço é, a grosso modo, encontrar uma política que retorne uma grande quantidade de recompensa no longo prazo.
+
+% É importante esclarecer aqui que o ato de condução de um veículo \textbf{não é} um problema que pode ser resolvido por MDP, pois possui um número virtualmente infinito de estados e as etapas não são definidas em tempos discretos $t \in \{0,1,2,...\}$. De qualquer forma, é importante discorrer sobre MDPs para se entender o processo de tomada de decisão, o que é política e como otimizá-la.
 
 \subsection{Algoritmos de otimização de política}
-Nesta seção será abordado mais sobre os diferentes tipos de algoritmos de otimização de política, principalmente o PPO, SAC que estão disponíveis no ML-Agents da Unity 3D.
+Nesta seção será abordado mais sobre os diferentes tipos de algoritmos de otimização de política, principalmente o PPO, SAC que estão disponíveis no ML-Agents da Unity 3D. 

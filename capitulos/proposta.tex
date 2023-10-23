@@ -10,7 +10,7 @@ A simulação envolve em treinar o veículo para percorrer trajetos em ambiente 
    \centering
    \includegraphics[scale=0.5, angle=90]{figs/Mapa-simulador-visao-superior.png}
     \caption{Visão superior o cenário urbano criado para o treinamento do veículo}
-    \label{fig:prefixt}
+    %\label{fig:prefixt}
  \end{figure}
 
 As rotas são compostas por: origem, \textit{checkpoints} e destino. O primeiro indica o local de partida do veículo, o último é o objetivo final do agente naquele episódio. Os \textit{checkpoints} são barreiras que indicam o caminho que deve ser percorrido, cada vez que o veículo atravessa uma delas ele ganha uma recompensa, isto é uma forma de indicar a ele que está fazendo o correto. Há 16 percursos predefinidos, cada uma delas possuem características distintas como distância origem-destino, quais e quantas conversões a serem feitas, isto fora pensado visando trazer uma diversidade maior de desafios a serem superados pelo agente. Assim como o tamanho do cenário, novos trajetos podem ser considerados em estudos futuros.
@@ -19,7 +19,7 @@ As rotas são compostas por: origem, \textit{checkpoints} e destino. O primeiro 
    \centering
    \includegraphics[scale=0.35]{figs/detalhe-rota.png}
     \caption{Rota vista de perspectiva isométrica, o agente posicionado a origem ao canto esquerdo, com os \textit{checkpoints} ao longo do percurso até o destino no canto direito.}
-    \label{fig:prefixt}
+    %\label{fig:prefixt}
  \end{figure}
 
  \section{Agente}
@@ -31,7 +31,7 @@ As rotas são compostas por: origem, \textit{checkpoints} e destino. O primeiro 
    \centering
    \includegraphics[scale=0.35]{figs/agente-raios-checkpoint.png}
     \caption{Exemplo do agente e seus raios perceptores, é possível ver 6 raios laterais se chocando com as calçadas ao lado, o raio frontal se chocando com o \textit{checkpoint}.}
-    \label{fig:prefixt}
+    %\label{fig:prefixt}
  \end{figure}
 
  Quanto as ações que o agente pode fazer são apenas 3: acelerar, frear e direcionar as rodas a direita e a esquerda. A primeira e a última ação são chamadas ações contínuas, sendo assim um número que indica o nível de aceleração que o carro irá produzir, e no caso da direção da roda o quão direciona elas estão a esquerda ou direita. O ato de frear por outro lado é uma grandeza discreta e binária, não há pouca ou muita frenagem, simplesmente o veículo está ou não está freando.
