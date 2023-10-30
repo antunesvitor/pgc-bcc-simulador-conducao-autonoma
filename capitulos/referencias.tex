@@ -36,7 +36,7 @@ Dentre as principais janelas da interface da Unity3D, temos: hierarquia, projeto
    \centering
    \includegraphics[scale=0.2]{figs/interface-unity3d-indicadores.png}
     \caption{Interface da Unity3D. A janela 1 é a hierarquia, 2 é a janela de projeto, 3 é visualização da cena e 4 é o inspetor}
-    %\label{fig:prefixt}
+    \label{fig:unity-ui}
  \end{figure}
 
 A janela de projeto estão os arquivos do projeto, é um diretório do projeto criado pela Unity3D onde deve conter arquivos de efeitos sonoros, códigos-fonte do desenvolvedor, fontes, modelos 2D e 3D, texturas, etc. A visualização da cena é uma janela que permite o desenvolvedor ter uma noção visual da disposição dos \textit{GameObjects}, desta forma ele consegue posicioná-los mais apropriadamente, também consegue ver se a dimensão e escala deles estão coerentes. 
@@ -66,14 +66,14 @@ No aprendizado por reforço o objetivo é sempre fazer com que o agente aprenda 
 
 A seguir será formalizado como esse proceso ocorre, toda esta seção é baseada em \citeonline{rl-sutton-barto}, exceto quando abordarmos sobre os algoritmos de otimização de política. É importante esclarecer aqui que a formalização a seguir se trata de tipos de problemas mais simples do que iremos lidar neste projeto, porém essa introdução é necessária para compreender os conceitos mais avançados serão vistos posteriormente.
 
-\subsection{Processo de tomada de decisão}
+\subsection{Processo de tomada de decisão} \label{mdp-section}
 Neste paradigma, o \textit{agente} toma uma decisão $A_t$ que afeta o \textit{ambiente} o qual está inserido, que retorna a ele um estado $S_{t+1}$ e uma recompensa $R_{t+1}$. O conjunto $S$ representa todos os estados possíveis do ambiente, cada estado $s$ representa toda a observação que o agente tem do sistema. 
 
 \begin{figure}[h]
    \centering
    \includegraphics[scale=0.75]{figs/RL-diagram.drawio.png}
     \caption{diagrama da interação do agente com o ambiente. Adaptado de \citeonline{rl-sutton-barto}}
-    %\label{fig:prefixt}
+    \label{fig:rl-diagram}
  \end{figure}
 
 Usando o jogo da velha de exemplo, o conjunto $S$ representaria todas as configurações possíveis do tabuleiro, um estado $S_t \in S$ seria um configuração específica, sendo que $S_0$ poderia representar o tabuleiro vazio antes de qualquer jogada. Uma ação $a \in A$ seria uma jogada e por fim $t \in \{0,1,2,3,..., T\}$ as etapas do jogo até a etapa final $T$.
@@ -109,7 +109,7 @@ O comportamento do agente é moldado pelas recompensas que recebe a cada ação 
 onde $T$ é a última etapa que ocorre quando se atinge um \textbf{estado terminal}. Nem todas as tarefas possuem um estado terminal, mas as que têm são chamadas de \textbf{tarefas episódicas}. Usando o exemplo do jogo da velha, podemos entender que cada estado que define um vencedor ou define um empate onde nenhuma jogada mais pode ser feita, seja um estado terminal. Em contraste, se uma tarefa não possui fim, é chamada de \textbf{tarefa contínua}. Como tarefas contínuas teriam $T = \infty$ logo $G_t = \infty$ e se torna impossível calcular por um computador. Então para isso é aplicado um desconto $\gamma$ na equação onde $0 \leqslant \gamma \leqslant 1$:
 
 \begin{equation}
-   G_t \doteq G_t = R_{t+1} + \gamma R_{t+2} + \gamma^{2} R_{t+3} + ... = \sum_{k = 0}^{\infty}\gamma^{k}R_{t+k+1}
+   G_t \doteq R_{t+1} + \gamma R_{t+2} + \gamma^{2} R_{t+3} + ... = \sum_{k = 0}^{\infty}\gamma^{k}R_{t+k+1}
 \end{equation}
 
 A \textbf{constante de desconto} $\gamma$ representa o valor de recompensas futuras, caso $\gamma = 0$ o agente apenas se preocuparia em maximizar $R_t$ independente dos valores de recompensas futuras. Quando se aplica um $\gamma$ se aproxima de 1, mais se valoriza estados futuros e aumenta as chances de o agente tomar uma ação que tenha uma recompensa imediata menor mas maiores recompensas futuras. 
@@ -132,9 +132,60 @@ Da mesma forma, pode-se estimar o valor de uma ação, para isso há a \textbf{f
 
 As funções valores $v_\pi$ e $q_\pi$ podem ser estimadas através de experiência. Pode-se começar com uma política que basicamente atribui a mesma probabilidade para qualquer ação em qualquer estado, conforme as recompensas vão sendo aplicadas o valor esperado do estado e da ação serão atualizados.
 
-Resolver uma tarefa utilizando-se de aprendizado por reforço é, a grosso modo, encontrar uma política que retorne uma grande quantidade de recompensa no longo prazo.
+\begin{figure}[h]
+   \centering
+   \includegraphics[scale=0.75]{figs/action-selection-diagram.drawio.png}
+    \caption{Diagrama das funções valores. Ao estado $s$ é atribuído o valor $v_\pi(s)$, a cada uma das ações é atribuído o valor $q_\pi(a_n|s)$ e tem probabilidade $\pi(a_n|s)$ de ser selecionada. Adaptado de \citeonline{rl-sutton-barto}}
+    \label{fig:policy-diagram}
+ \end{figure}
+
+Sabemos que $G_t$ é uma função recursiva de modo que $G_t \doteq R_{t+1} + \gamma G_{t+1}$. Com isso é fácil percerber que o mesmo se aplica para as funções valores, para qualquer política $\pi$ em qualquer estado $s$, temos a seguinte função valor recursiva:
+
+\begin{equation}
+   \begin{aligned}[b]
+      v_\pi(s) &\doteq \mathbb{E}_\pi [G_t | S_t = s] \\
+      &= \mathbb{E}_\pi [R_{t+1} + \gamma G_{t+1} | S_t = s] \\
+      &= \sum_{a}\pi(a|s) \sum_{s'}\sum_{r}p(s', r | s, a)[r+\gamma\mathbb{E}[G_{t+1}|S_{t+1} = s']] \\
+      &= \sum_{a}\pi(a|s)\sum_{s', r}p(s', r | s, a)[r + \gamma v_\pi(s')]\text{, para todo } s \in S
+   \end{aligned}
+   \label{recursive-state-value-function}
+\end{equation}
+
+Resolver uma tarefa por aprendizado por reforço é, grosseiramente, encontrar uma política que retorne uma grande quantidade de recompensa no longo prazo. Um política $\pi$ é dita melhor que outra $\pi'$ se e somente se $v_\pi(s) \geqslant v_{\pi'}(s)$, para todo  $s \in S$. Em um MDP finito, é garantido que haja pelo menos uma \textbf{política ótima}, isto é, uma que seja melhor que qualquer outra para todos os estados, esta política é geralmente representada por $\pi_\ast$, neste caso ela deve utilizar uma \textit{função valor do estado} também ótima:
+
+\begin{equation} \label{state-value-optimal-function}
+   v_\ast(s) \doteq \max_{\pi}v_\pi(s) \text{, para todo } s \in S
+\end{equation}
+
+similarmente, para acharmos a \textit{função valor da ação} ótima:
+\begin{equation}\label{action-value-optimal-function}
+   q_\ast(s,a) \doteq \max_{\pi}q_\pi(s,a) \text{, para todo } s \in S \text{ e } a \in A(s)
+\end{equation}
 
 % É importante esclarecer aqui que o ato de condução de um veículo \textbf{não é} um problema que pode ser resolvido por MDP, pois possui um número virtualmente infinito de estados e as etapas não são definidas em tempos discretos $t \in \{0,1,2,...\}$. De qualquer forma, é importante discorrer sobre MDPs para se entender o processo de tomada de decisão, o que é política e como otimizá-la.
 
-\subsection{Algoritmos de otimização de política}
+\subsection{Algoritmos de otimização de política e conceito de aproximação}
+% Texto temporário abaixo explicando o que será cobrido nesta seção 
 Nesta seção será abordado mais sobre os diferentes tipos de algoritmos de otimização de política, principalmente o PPO, SAC que estão disponíveis no ML-Agents da Unity 3D. 
+
+Existem muitas formas de se chegar aos valores das funções (\ref{state-value-optimal-function}) e (\ref{action-value-optimal-function}) e na política ótima, dentre elas pode-se citar programação dinâmica usando a equação (\ref{recursive-state-value-function}) que é uma \textbf{equação de Bellman}, onde usa-se iteração para avaliar os estados e depois otimizar a política, e com a política otimizada reavalia os estados para então otimizar a política novamente, e assim por diante até que os valores dos estados convirjam para seus "valores verdadeiros". 
+
+%Considerar fazer um resumo melhor sobre Monte Carlo e Q-Learning (exigirá mais leitura, deixar pra dps)
+Outro método seria \textbf{Monte Carlo}, que não assume total conhecimento do ambiente (condição necessária para otimizar com programação dinâmica) e utiliza-se de experiência prévia. Por fim temos \textbf{Q-learning} que combina um pouco dos dois. Apesar destes métodos terem suas aplicações, não discorreremos aqui sobre eles, pois, como foi explicado anteriormente, a tarefa que o agente condutor executará não é um MDP finito. 
+
+A condução de um veículo autônomo não possui um número finito de estados, pelo contrário, se considerarmos o uso de visão computacional com processamento de imagem a quantidade de estados possíveis se torna virtualmente infinito. Os problemas que um MDP finito resolve são \textbf{tabulares}, isto é, podem ser dispostos em uma tabela, onde se guardaria a relação com ações válidas, seus valores, etc. Além disso, um estado não irá possuir a \textbf{propriedade Markov}, isto é, não possui informação passadas da interação agente-ambiente.
+
+Para isso há os \textbf{métodos de aproximação}, onde a quantidade de estados possíveis é tão grande que podemos assumir que o agente nunca passará pelo mesmo estado novamente. Portanto, uma abordagem em que alterar um valor $v(s)$ não altera o valor de outro estado semelhante $v(s')$ não parece útil, ao invés disso precisamos assumir que a valorização de um estado implique na valorização de outro. Além disso, temos o fato de que é inviável calcular  $v_\ast(s)$ para todo $s \in S$, então agora será explorado os métodos de \textbf{aproximação}, que se baseia em utilizar uma função valor do tipo $\hat{v}(s, \mathbf{w}) \approx v_\ast(s)$ e $\mathbf{w} \in \mathbb{R}^d$. Dessa forma $\hat{v}$ pode ser tanto uma função linear com $\mathbf{w}$ sendo um vetor dos coeficientes quanto uma rede neural com $\mathbf{w}$ sendo os pesos das conexões.
+
+\subsection{Métodos de gradiente de política e de ator-crítico}
+Métodos de gradiente de política são uma abordagem diferente das já mencionadas acima, no caso a atualização da política não depende das funcões valores das ações, em vez disso temos $\pi(a|s, \mathbf{\theta}) = \Pr\{A_t = a | S_t = s, \mathbf{\theta}_t = \mathbf{\theta}\}$ para  a probabilidade de ação $a$ ser selecionada  no tempo $t$ dado que o ambiente se encontra no estado $s$ com parâmetros $\mathbf{\theta} \in \mathbb{R}^{d'}$. Agora o interesse é atualizar $\mathbf{\theta}$ a fim de aprimorar a política da seguinte forma:
+
+\begin{equation}
+   \mathbf{\theta}_{t+1} = \mathbf{\theta} + \alpha \widehat{\nabla J (\mathbf{\theta_t})},
+\end{equation}
+
+onde $\alpha$ é o tamanho do salto do gradiente e $\widehat{\nabla J (\mathbf{\theta_t})} \in \mathbb{R}^d$ é uma estimativa estocástica cuja expectativa se aproxima do gradiente da medida de desempenho em relação ao seu argumento $\mathbf{\theta}_t$. Qualquer método que obedeça a regra acima é um \textbf{método de gradiente de política} (PGM, do inglês Policy Gradient Method)podendo ou não utilizar de aproximação de função valor do estado $\hat{v}(s)$ descrito acima, caso utilize será considerado um \textbf{método de ator-critico} (actor-critic method). 
+
+Como foi mencionado na introdução, o pacote ML-Agents possui dois algoritmos de aprendizado por reforço: o \textbf{PPO} e o \textbf{SAC}. O primeiro é a sigla para \textbf{Proximal Policy Optimization} e é um PGM que tem o diferencial de que ele alterna entre extrair dados da política e executar uma otimização em lotes dos dados extraídos, além de aproveitar de se aproveitar de TRPO (Trust Regional Policy Optimization) mas sem ser tão complicado quanto. O algoritmo foi criado a fim de ser mais eficiente em processamento de dados e mais robusto (obter sucesso sem ter que ajustar os hiper-parâmetros) (\citeonline{Schulman_Wolski_Dhariwal_Radford_Klimov_2017}).
+
+\textbf{SAC} (ou Soft Actor-Critic) é um algoritmo to tipo off-policy que visa maximizar o retorno esperado e entropia, isto é, obtem progresso agindo mais aleatoriamente possível. Isso é para evitar um problema comum em métodos que lidam com algoritmos de aprendizado de reforço que são livres de modelo: fragilidade a hiper-parametros (quando uma pequena mudança nestes gera um disturbio muito grande no desempenho do treino)(\citeonline{Haarnoja_zhou_Hartikainen_2018})

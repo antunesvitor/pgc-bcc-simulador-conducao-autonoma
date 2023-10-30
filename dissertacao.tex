@@ -74,11 +74,6 @@
 \makeindex
 % ---------------------
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%  INICIO DO DOCUMENTO  %%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{document}
-
 % Configurações de CITAÇÕES para abntex2
 \include{extras/conf_citacoes}
 
@@ -87,6 +82,12 @@
 
 % Inclui Configurações de aparência do PDF Final
 \include{extras/conf_pdf}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  INICIO DO DOCUMENTO  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
 % Retira espaço extra obsoleto entre as frases.
 \frenchspacing
 
@@ -134,13 +135,26 @@
   \item[IA] Inteligência Artificial
   \item[AS] Aprendizado Supervisionado
   \item[MDP] Processo de Decisão de Markov
+  \item[PGM] Policy Gradient Method (Método de polítca gradiente)
+  \item[PPO] Proximal Policy Optimization (Algoritmo de )
+  \item[SAC] Soft Actor Critic
 \end{siglas}
 
 % Lista de símbolos
 \begin{simbolos}
 	\item[$ \in $] Pertence
 	\item[$ \doteq $] Se define por
-	\item[$ \gamma $] constante de desconto
+	\item[$ S $] Conjunto de estados
+	\item[$ S^+ $] Conjunto de estados onde há estado terminal
+	\item[$ A $] Conjunto de ações
+	\item[$ A(s) $] Conjunto de ações válidas no estado $s$
+	\item[$ \pi $] Política
+	\item[$ \pi_\ast $] Política ótima
+	\item[$ v(s) $] função valor do estado s
+	\item[$ v_\pi(s) $] função valor do estado s sob política $\pi$
+	\item[$ q(s,a) $] função valor do ação-estado
+	\item[$ q_\pi(s,a) $] função valor do ação-estado sob política $\pi$
+	\item[$ \gamma $] Constante de desconto
 \end{simbolos}
 
 % Inserir o SUMÁRIO
