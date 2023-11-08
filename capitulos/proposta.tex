@@ -39,13 +39,17 @@ As rotas são compostas por: origem, \textit{checkpoints} e destino. O primeiro 
  Quanto as ações que o agente pode fazer são apenas 3: acelerar, frear e direcionar as rodas a direita e a esquerda. A primeira e a última ação são chamadas ações contínuas, sendo assim um número que indica o nível de aceleração que o carro irá produzir, e no caso da direção da roda o quão direciona elas estão a esquerda ou direita. O ato de frear por outro lado é uma grandeza discreta, o veículo está ou não está freando.
 
 \subsection{As recompensas}
-Dado os sensores do agente e o ambiente montado podemos definir as recompensas/punições das seguintes ocorrências: chegar ao destino ($R_d = 1$, sempre), atingir um \textit{checkpoint} ($R_c$), colidir com a/subir na calçada ($P_c$), colidir com a parede($P_p$), não chegar no destino a tempo($P_t$). Além disso temos os seguintes cenários possíveis: o agente chega ao destino, o agente não chegar a tempo, o agente tombar o veículo. As recompensas estão no intervalo $[-1,1]$ e serão aplicadas da seguinte forma em cada cenário:
+Os eventos sujeitos a aplicação de recompensa/punição são os seguintes: o veículo chegar ao destino ($R_d$), o veículo atingir um checkpoint ($r_c$), colisão com a calçada ($p_c$), colisão com a parede($p_p$), tombar o veículo (($P_t$)). $R_d$ e $P_t$ são constantes e são eventos que definem o fim do episódio. Por outro lado, $r_c, p_c \text{ e } p_p$ serão aplicadas ao longo do episódio conforme os eventos ocorrerem.
+
+Para o encerramento do episódio temos os seguintes cenários possíveis: o agente chega ao destino, o agente não chegar a tempo, o agente tombar o veículo. As recompensas estão no intervalo $[-1,1]$ e serão aplicadas da seguinte forma em cada cenário:
 
 \begin{itemize}
-   \item Chega ao destino: $R_T = R_d - P_c - P_p$
+   \item Chega ao destino: $R_T = R_d + R_c - P_c - P_p$
    \item Não chega a tempo: $R_T = R_c - P_c - P_p$
-   \item Tomba o carro: $R_T = -1$
+   \item Tomba o carro: $R_T = P_t \doteq -1$
 \end{itemize}
+
+Sendo $R_T$ a recompensa total do episódio, $R_c$, $P_c$ e $P_p$ são o produto de $r_c, p_c \text{ e } p_p$ vezes a quantidade de ocorrência dos respectivos eventos. Vale ressaltar que $R_d + R_c = 1$, isto quer dizer que se o veículo chegar ao destino sem se chocar com a calçada ou parede, terá a recompensa máxima, por outro lado $P_t = 1$, indicando que caso o veículo tombe, não interessa quantos checkpoints ele atingiu, a punição é máxima. Sobre $r_c$, seu valor está sujeito ao trajeto do episódio, como eles possuem tamanho diferente, o valor a recompensa segue na forma $r_{c_x} \doteq \frac{R_c}{n_{c_x}}$, sendo $n_{c_x}$ a quantidade de checkpoints naquela rota $x$.
 
 \section{Os algoritmos e hiper-parâmetros}\label{algoritmos}
 Para executar o treino é necessário especificar para o \textbf{ml-agents} o algoritmo e suas configurações, para isso existe um arquivo \textbf{.yaml} que é responsável por isso. Abaixo, um exemplo seguido da explicação de cada parâmetro:
