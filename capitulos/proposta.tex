@@ -1,9 +1,9 @@
 \chapter{Modelo proposto}\label{cap:proposta}
-Este capítulo abordará o sistema de treinamento proposto, será exposto como funciona todo o ambiente simulado. Dentre os módulos que compõe um veículo autônomo o foco deste projeto será em desenvolver o componente de controle de deslocamento que é responsável por fazer carro percorrer um trajeto. No mundo real as rotas seriam geradas por outro componente, porém isto está além do escopo deste projeto, portanto elas serão definidas pelo autor. Importante ressaltar que o conjunto de rotas deve ser composto por uma variedade de trajetos que exijam uma diversidade de manobras a serem aprendidas pelo agente.
+Este capítulo abordará o sistema de treinamento proposto. Primeiramente será exposto como funciona todo o ambiente desenvolvido, depois é explicado sobre a configuração dos algoritmos por fim é explicado como será o treinamento e teste dos agentes. 
 
 % Esta seção está sujeita a mudanças feitas no ambiente durante o PGCIII. 
 \section{Modelo}\label{modelo}
-Aqui é descrito sobre o modelo do projeto. Por "modelo" entende-se o conjunto ambiente-agente-recompensas. Cada um deles é detalhado nas subseções abaixo.
+Aqui é descrito sobre o modelo do projeto. Por "modelo" entende-se o conjunto ambiente-agente-recompensas. Cada um deles é detalhado nas subseções abaixo. Dentre os módulos que compõe um veículo autônomo o foco deste projeto será em desenvolver o componente de controle de deslocamento que é responsável por fazer carro percorrer um trajeto. No mundo real as rotas seriam geradas por outro componente, porém isto está além do escopo deste projeto, portanto elas serão definidas pelo autor. Importante ressaltar que o conjunto de rotas deve ser composto por uma variedade de trajetos que exijam uma diversidade de manobras a serem aprendidas pelo agente.
 
 \subsection{O ambiente}
 A simulação envolve em treinar o veículo para percorrer trajetos em ambiente urbano, a princípio, por uma questão de simplicidade o agente não terá de lidar com declives ou aclives, semáforos, outros veículos ou pedestres. Porém outros elementos estáticos comuns de uma cidade como calçadas, postes, árvores, prédios, etc. Portanto, o foco poderá se manter no estudo de fazer um agente percorrer as rotas. Às bordas do cenário há muros que limitam o alcance do veículo, foi concluído pelo autor que o tamanho atual é suficiente para os treinos iniciais, em estudos futuros pode ser considerado a expansão do cenário. O agente recebe uma punição ao se chocar com a calçada ou com os muros da borda da cidade.
@@ -24,7 +24,7 @@ As rotas são compostas por: origem, \textit{checkpoints} e destino. O primeiro 
     \label{fig:route-view}
  \end{figure}
 
- \subsection{O agente}
+ \subsection{O agente}\label{agent-subsection}
  Para o aprendizado o veículo possui 8 sensores apontando para todas as direções uniformemente espaçadas, estes sensores são um \textit{component} do pacote \textbf{ML-agents} da Unity3D, são capazes de medir a distância dos objetos próximos ao veículo e também são capazes de distinguir quais são estes objetos. Estes sensores dentro do editor são representados por feixes que partem do centro do veículo, é possível configurar diversos atributos deles como a quantidade, o ângulo máximo de distância do primeiro ao último, o ângulo vertical (que indica se eles apontam para cima ou para baixo) e o tamanho da esfera, que nada mais é que a tolerância de colisão do sensor.
 
  \begin{figure}[h]
@@ -39,17 +39,35 @@ As rotas são compostas por: origem, \textit{checkpoints} e destino. O primeiro 
  Quanto as ações que o agente pode fazer são apenas 3: acelerar, frear e direcionar as rodas a direita e a esquerda. A primeira e a última ação são chamadas ações contínuas, sendo assim um número que indica o nível de aceleração que o carro irá produzir, e no caso da direção da roda o quão direciona elas estão a esquerda ou direita. O ato de frear por outro lado é uma grandeza discreta, o veículo está ou não está freando.
 
 \subsection{As recompensas}
-Os eventos sujeitos a aplicação de recompensa/punição são os seguintes: o veículo chegar ao destino ($R_d$), o veículo atingir um checkpoint ($r_c$), colisão com a calçada ($p_c$), colisão com a parede($p_p$), tombar o veículo (($P_t$)). $R_d$ e $P_t$ são constantes e são eventos que definem o fim do episódio. Por outro lado, $r_c, p_c \text{ e } p_p$ serão aplicadas ao longo do episódio conforme os eventos ocorrerem.
+Os eventos sujeitos a aplicação de recompensa/punição são os seguintes: o veículo chegar ao destino ($R_d$), o veículo atingir um checkpoint ($r_c$), colisão com a calçada ($p_c$), colisão com a parede($p_p$), tombar o veículo ($P_t$) e por fim a punição total por \textit{step} $P_{step}$. $R_d$, e $P_t$ são constantes e são eventos que definem o fim do episódio. Por outro lado, $r_c, p_c, p_p \text{ e } p_{step}$ serão aplicadas ao longo do episódio conforme os eventos ocorrerem, no caso do último o evento é o próprio \textit{step} e seu valor é $p_{step} = \frac{P_{step}}{N}$ sendo $N$ o número máximo de \textit{steps} por episódio.
 
 Para o encerramento do episódio temos os seguintes cenários possíveis: o agente chega ao destino, o agente não chegar a tempo, o agente tombar o veículo. As recompensas estão no intervalo $[-1,1]$ e serão aplicadas da seguinte forma em cada cenário:
 
 \begin{itemize}
    \item Chega ao destino: $R_T = R_d + R_c - P_c - P_p$
-   \item Não chega a tempo: $R_T = R_c - P_c - P_p$
+   \item Não chega a tempo: $R_T = R_c - P_{step} - P_c - P_p$
    \item Tomba o carro: $R_T = P_t \doteq -1$
 \end{itemize}
 
-Sendo $R_T$ a recompensa total do episódio, $R_c$, $P_c$ e $P_p$ são o produto de $r_c, p_c \text{ e } p_p$ vezes a quantidade de ocorrência dos respectivos eventos. Vale ressaltar que $R_d + R_c = 1$, isto quer dizer que se o veículo chegar ao destino sem se chocar com a calçada ou parede, terá a recompensa máxima, por outro lado $P_t = 1$, indicando que caso o veículo tombe, não interessa quantos checkpoints ele atingiu, a punição é máxima. Sobre $r_c$, seu valor está sujeito ao trajeto do episódio, como eles possuem tamanho diferente, o valor a recompensa segue na forma $r_{c_x} \doteq \frac{R_c}{n_{c_x}}$, sendo $n_{c_x}$ a quantidade de checkpoints naquela rota $x$.
+Sendo $R_T$ a recompensa total do episódio, $R_c$, $P_c$ e $P_p$ representam a soma total de ocorrências de $r_c$, $p_c$ e $p_p$. Vale ressaltar que $R_d + R_c = 1$, isto quer dizer que se o veículo chegar ao destino sem se chocar com a calçada ou parede, terá a recompensa máxima, por outro lado $P_t = -1$, indicando que caso o veículo tombe, não interessa quantos checkpoints ele atingiu, a punição é máxima. Podemos interpretar o segundo cenário como: caso o veículo não chegue a tempo recebe uma recompensa pelo progresso ($R_c$) descontado com punição por tempo mais as punições por colisões. Sobre $r_c$, seu valor está sujeito ao trajeto do episódio, como eles possuem tamanho diferente, o valor a recompensa segue na forma $r_{c_x} \doteq \frac{R_c}{n_{c_x}}$, sendo $n_{c_x}$ a quantidade de checkpoints naquela rota $x$.
+
+\subsection{O veículo}
+Já vimos como funciona o agente agora vamos destrinchar como funciona a condução do \textit{GameObject} do veículo. O que foi explicado em \nameref{agent-subsection} se trata dos componentes que estão associados ao objeto do topo da hierarquia, o \textit{GameObject Car}. Abaixo do mesmo há dois objetos \textit{body} e \textit{spoiler} que são basicamente os \textit{meshes 3D} que dão o visual do veículo.
+
+\begin{figure}[h]
+   \centering
+   \includegraphics{figs/hierarquia-veiculo.png}
+    \caption{Hierarquia dos \textit{GameObjects} que compõe o veículo.}
+    \label{fig:vehicle-hierarchy}
+\end{figure}
+
+O terceiro objeto é \textit{Wheels} que agrega os objetos \textit{Meshes} e \textit{Wheel Colliders}, o primeiro é um conjunto dos \textit{meshes 3D} das rodas, o segundo agrupa os \textit{colliders} das mesmas. Estes últimos possuem um \textit{component} chamado \textit{Wheel Collider}, que é responsável pela física da roda (\citeonline{wheelcollider}) podendo configurar o raio, massa, amortecimento, etc. Todos os atributos estão com o valor padrão, exceto o raio que foi alinhado com o do \textit{mesh 3D}.
+
+Para o controle do veículo foi adaptado um código fonte disponível em (\citeonline{PrismYoutube_2022}), neste código ele pega o input do usuário e atribui os mesmos a propriedades padrões dos \textit{colliders} das rodas dianteiras, o input "vertical" é aplicado ao torque do motor (\textit{motorTorque}), o "horizontal" ao ângulo de esterçamento do veículo (\textit{steeringAngle}, limitado a 30°). Ao frear é aplicado uma \textit{breakforce} nas quatro rodas. \textit{breakforce}, \textit{motorTorque} e \textit{steeringAngle} são todos propriedades do componente \textit{Wheel Collider} da Unity, basta associar os inputs do usuário a eles que a \textit{engine} da Unity3D lida com a física do veículo.
+
+Para o projeto foi feito uma adaptação neste código-fonte, em vez de se aplicar o input do usuário, foi aplicado os valores que vem do \textit{actionBuffer}, que é um argumento de \textit{OnActionReceived()} a função que é responsável por tratar os dados das ações tomadas pelo agente. O \textit{actionBuffer} é um array que contém em cada elemento os valores da política naquele estado, isto é, o "input do agente".
+
+O agente no projeto pode ser entendido como o conjunto de \textit{components} que fazem parte do GameObject pai, o "Car", seriam eles: behavior Parameters, o Car Agent, o Decision Requester e o Ray Perception sensor 3D. 
 
 \section{Os algoritmos e hiper-parâmetros}\label{algoritmos}
 Para executar o treino é necessário especificar para o \textbf{ml-agents} o algoritmo e suas configurações, para isso existe um arquivo \textbf{.yaml} que é responsável por isso. Abaixo, um exemplo seguido da explicação de cada parâmetro:
@@ -107,13 +125,13 @@ O arquivo começa com o \textbf{behaviors} que é uma lista de configurações d
    \item [network\_settings->normalize:] Se normalização deve ser aplicada no vetor de observação. Esta normalização pode melhorar o treino em caso de tarefas que lidam com controles contínuos complexos, mas pode atrapalhar caso contrário.
 \end{description}
 
-\section{Metodologia}
-A tarefa a ser resolvida pelo agente é episódica, onde em cada episódio ele terá que chegar ao destino seguindo o trajeto definido pelos checkpoints. O episódio só acaba se ele atingir o destino ou se tombar o veículo. Durante o treino o agente receberá um trajeto aleatório em cada episódio e durante o teste o agente terá que percorrer três vezes todos trajetos na ordem de cada um deles no projeto da Unity. No final terá o desempenho dele no teste será medido tanto quantitativamente quanto dissertativamente. Quantitativamente pois será mostrado o desempenho em cada rota, quantidade (de 0 a 3) de que conseguiu chegar ao destino em cada um deles e quantas colisões foram registradas no total. Dissertativamente será a análise textual com opnião do autor sobre a condução do veículo e focará em observar características mais subjetivas (por exemplo se o agente conduz o carro com muitas revoluções ou se acelera e freia muito bruscamente, entre outras). 
+\section{Desenvolvimento}\label{metodologia}
+A análise e desenvolvimento do agente se dará tanto no treino quanto nos testes. O objetivo final é chegar a um agente que saiba percorrer todos os 17 trajetos de forma eficiente, para isso é preciso analisar as estatísticas produzidas pelo treino, saber se a política se aproximou suficientemente do comportamento ótimo de modo que cometa erros. Antes que se chegue a este nível é preciso que ele demonstre sucesso em treinos mais simples, então dividimos as etapas em 4 \textbf{desafios}. Os três primeiros serão em trajetos específicos, mas com níveis diferentes de dificuldade. O último será o treino o desafio geral, onde ele deve percorrer qualquer rota dada a ele.
 
-Como foi dito na seção \nameref{sec:objetivos}, o propósito deste projeto é estudar a criação e desenvolvimento de um ambiente simulado para o treino de veículo autônomos, logo o mesmo está sujeito a mudanças e melhorias para tornar a simulação o mais próximo da realidade possível. O versionamento do modelo será definido aqui, suas mudanças mais relevantes serão detalhadas e justificadas, mudanças estas que incluem alterações de recompensas, observações do agente, hiper-parâmetros dos algoritmos PPO e SAC. Vale ressaltar que as mudanças seguem na ordem da maior pra menor: alteração do agente ou ambiente, reorganização das recompensas, ajustes nos hiper-parâmetros. Não são todos os ajustes que serão expostos aqui, especialmente ao dos hiper-parâmetros, se um alteração não levar a um resultado diferente antes de outro reajuste então pode ser considerado insignificante.
+Como foi dito na seção \nameref{sec:objetivos}, o estudo não propõe um modelo imutável, ao invés disso, é esperado que o agente evolua em diversas frentes: seus sensores, os métodos de treino, os algoritmos, o ambiente envolvido se torne mais realista, entre outros. Como será visto no Capítulo \ref{cap:resultados}, o agente e ambiente passou por mudanças a fim de cumprir as tarefas, estas alterações serão justificadas e compreendidas com os resultados dos treinos e testes.
 
 \subsection{Treinamento e teste}
-Tendo o \nameref{modelo} e \nameref{algoritmos} detalhados acima é preciso explicar o treinamento e teste. O treinamento é executado via linha de comando, é necessário ativar o ambiente Python, gerar um executável do simulador pelo editor da unity e ter um arquivo de configuração do algoritmo. Tendo estes três itens é possível executar o comando do ml-agents e por o agente em treino. Após o treino finalizar é gerado um arquivo \textbf{.onnx} que é política final do agente, a rede neural com os coeficientes gerados pelo algoritmo após o treino, o seu "cérebro". Finalmente podemos por o agente em teste, de volta ao editor da Unity3D, basta carregar o cérebro no agente e executar o teste, o veículo agora se mexe sozinho sem input do usuário, e o mesmo deve estar agindo de acordo com os resultados do treino, seja ele um sucesso ou não.
+Tendo o \nameref{modelo} e \nameref{algoritmos} detalhados acima é preciso explicar o treinamento e teste. O treinamento é executado via linha de comando, é necessário ativar o ambiente Python, gerar um executável do simulador pelo editor da unity e ter um arquivo de configuração do algoritmo. Tendo estes três itens é possível executar o comando do ml-agents e por o agente em treino. Após o treino finalizar é gerado um arquivo \textbf{.onnx} que é política final do agente, a rede neural com os coeficientes gerados pelo algoritmo após o treino, o seu "cérebro". Finalmente podemos por o agente em teste, de volta ao editor da Unity3D, basta carregar o cérebro no agente e executar o teste, o veículo agora se move como a política traduz os estados em ações, definida no arquivo .onnx, sem qualquer input do usuário, e o mesmo deve estar agindo de acordo com os resultados do treino, seja ele um sucesso ou não.
 
 Nos testes o agente deverá percorrer os mesmos trajetos, agora eles não serão aleatórios, ele percorrerá cada um três vezes. Como na lista de observações não inclui qualquer informação sobre qual trajeto ele está percorrendo no momento, o autor não viu necessidade de separar trajetos de treino e de teste, embora essa possibilidade posta em estudos futuros.
 
@@ -130,19 +148,26 @@ Quando o treino é finalizado é armazenado diversas estatísticas que são exib
 Os demais gráficos são o \textbf{beta}, \textbf{epsilon} e \textbf{learning\_rate} eles são basicamente o valor destes hiper-parâmetros ao longo do treino, dependendo se os \textit{schedules} deles forem constante ou linear, é esperado uma linha constante no primeiro caso ou uma queda do valor deles até zero caso linear.
 
 \subsection{Estudo e análise}
-Será estudado um modelo por vez, a descrição do modelo acima está sujeita a mudanças, a descrição acima é a primeira versão e todas as alterações que foram necessárias serão expostas, detalhadas e justificadas na seção de Resultados e Discussão. Cada modelo será treinado e testado com ambos os algoritmos, os hiperparametros não serão iguais para ambos pois a ideia é extrair o melhor resultado de ambos os cenários. A análise pretende responder as seguintes perguntas:
+Para cada desafio será avaliado o treino e teste. A análise do treino envolverá(além dos gráficos mencionados acima) o tempo que demorou para convergir, a mediana e desvio padrão da recompena final. Para o teste, teremos duas formas diferentes de avaliar. Para os três primeiros desafios, o agente deverá percorrer o percurso que treinou dez vezes, será avaliado pela recompensa média e a quantidade de vezes que chegou ao destino. Para o desafio geral, deverá percorrer todas as rotas três vezes, será avaliado da mesma forma, por rota e o consolidado total. O primeiro desafio será específico em uma rota retilínea, sem necessidade de fazer curvas. O segundo exigirá que o agente faça uma curva, será treinado em dois trajetos diferentes. O último antes do geral, exigirá mais de uma curva, será treinado em três trajetos distintos. Por fim o geral será treinado em todos os trajetos, de diferentes tamanhos e complexidade. Fora a análise quantitativa, haverá também uma análise mais subjetiva da condução do veículo.
 
-\begin{itemize}
-   \item Algum algoritmo convergiu relativamente rápido? Se sim qual deles?
-   \item Algum algoritmo obteve uma média de recompensa satisfatória? Qual obteve a melhor?
-   \item Caso positivo pra pergunta acima, algum desempenho satisfatoriamente nos testes? Qual foi o melhor?
-\end{itemize}
+\begin{table}[htpb]
+   \centering
+   \caption{Avaliação dos desafios. A coluna de rotas informa qual o \textit{GameObject} de rota que será treinado. A figura deles estará nos resultados.}
+   \begin{tabular}{|l|p{3cm}|r|}
+        \hline
+        \small{Desafio}                   & \small{Rota(s)}                            & \small{Qtde. testes}     \\ \hline
+         Específico: de trajeto fácil     & Path(2)                                    &      10                  \\ \hline
+         Específico: de trajeto mediano   & Path(8)\newline Path(0)                    &      10 em cada rota     \\ \hline
+         Específico: de trajeto difícil   & Path(3)\newline Path(5)\newline Path(6)    &      10 em cada rota     \\ \hline
+         Geral                            & Todos                                      &      30 (3 em cada)      \\ \hline
+   \end{tabular}
+\end{table}
 
-Se as respostas para as perguntas acima forem negativas, o cáculo de recompesas será alterado, caso persista os observadores do agente será alterado. Até que se obtenha um agente eficiente.
+Aqui fica mais claro ao leitor o porquê o agente não é imutável, a cada desafio aumenta bastante a dificuldade da tarefa, exigindo uma calibragem mais sensível de hiper-parâmetros ou um sistema sensorial mais robusto. Neste capítulo foi ilustrado a versão mais básica do veículo e do ambiente mas no próximo, onde veremos sobre os resultados dos treinos e testes, será expostos as mudanças que precisaram ser feitas no modelo.
+
+No teste de um desafio, o agente deverá completar ao menos 90\% dos trajetos e média de recompensa acima de 0,95 cumprir os requisitos antes de tentar o próximo. 
 
 %%%%%
-% Comentar sobre: 
-% Como será o teste:
-%     considerar criar uma rotina de teste 
+% considerar completar esta parte, adicionar perguntas que devem ser respondidas na análise
 %%%%
  

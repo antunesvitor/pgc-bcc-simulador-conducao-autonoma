@@ -34,11 +34,16 @@ Uma das maiores causas de morte no Brasil é por conta de acidentes de trânsito
 
 \section*{Objetivos}\label{sec:objetivos}
 \addcontentsline{toc}{section}{Objetivos}
-O objetivo deste projeto é criar uma simulação que se aproxime o máximo possível a um cenário real e com isso analisar todos os elementos que são necessários para que o agente aprende a exercer sua tarefa mais elementar: conduzir o veículo de sua origem até seu destino.
+\subsection*{Objetivos Gerais}
+O propósito deste projeto é entregar um ambiente simulado que sirva de treinamento para veículos autônomos, que possa ser útil não somente para os estudos e análises que serão realizados neste mas também em futuros trabalhos que envolva treinar agentes em um cenário urbano. O objetivo aqui é criar o ambiente, o veículo, sua mecânica de direção e um agente que consiga conduzir o veículo. No fim, o agente deverá ser capaz de conduzir o veículo em qualquer rota traçada até o destino indicado.
+
+\subsection*{Objetivos específicos}
+Este trabalho pretende servir de base para a criação desta plataforma. Na seção \nameref{metodologia}, será explicado que o agente deverá superar cada desafio, com uma dificuldade crescente após o outro. Ao fim será respondido as seguintes perguntas:
+
 \begin{itemize}
-    \item Analisar quantos sensores o veículo deve possuir, como devem ser posicionados. 
-    \item Como a adição gradual de cada elemento de trânsito afeta o agente (elementos como outros veículos, semáforos e pedestres)
-    \item Diferença entre os algoritmos de otimização de política \textbf{SAC} e \textbf{PPO} afetam a convergência do treino e o resultado final
+    \item Quais são as observações mínimas que um agente precisa ter para realizar sua tarefa?
+    \item Quais ajustes de parâmetros necessários para ter um treino efetivo?
+    \item Como testar o agente treinado?
 \end{itemize}
 
 \section*{Etapas do estudo}\label{sec:etapas}

@@ -184,8 +184,17 @@ Métodos de gradiente de política são uma abordagem diferente das já menciona
    \mathbf{\theta}_{t+1} = \mathbf{\theta} + \alpha \widehat{\nabla J (\mathbf{\theta_t})},
 \end{equation}
 
-onde $\alpha$ é o tamanho do salto do gradiente e $\widehat{\nabla J (\mathbf{\theta_t})} \in \mathbb{R}^d$ é uma estimativa estocástica cuja expectativa se aproxima do gradiente da medida de desempenho em relação ao seu argumento $\mathbf{\theta}_t$. Qualquer método que obedeça a regra acima é um \textbf{método de gradiente de política} (PGM, do inglês Policy Gradient Method)podendo ou não utilizar de aproximação de função valor do estado $\hat{v}(s)$ descrito acima, caso utilize será considerado um \textbf{método de ator-critico} (actor-critic method). 
+onde $\alpha$ é o tamanho do salto do gradiente e $\widehat{\nabla J (\mathbf{\theta_t})} \in \mathbb{R}^d$ é uma estimativa estocástica cuja expectativa se aproxima do gradiente da medida de desempenho em relação ao seu argumento $\mathbf{\theta}_t$. Qualquer método que obedeça a regra acima é um \textbf{método de gradiente de política} (PGM, do inglês Policy Gradient Method) podendo ou não utilizar de aproximação de função valor do estado $\hat{v}(s)$ descrito acima, caso utilize será considerado um \textbf{método de ator-critico} (actor-critic method). 
 
 Como foi mencionado na introdução, o pacote ML-Agents possui dois algoritmos de aprendizado por reforço: o \textbf{PPO} e o \textbf{SAC}. O primeiro é a sigla para \textbf{Proximal Policy Optimization} e é um PGM que tem o diferencial de que ele alterna entre extrair dados da política e executar uma otimização em lotes dos dados extraídos, além de aproveitar de se aproveitar de TRPO (Trust Regional Policy Optimization) mas sem ser tão complicado quanto. O algoritmo foi criado a fim de ser mais eficiente em processamento de dados e mais robusto (obter sucesso sem ter que ajustar os hiper-parâmetros) (\citeonline{Schulman_Wolski_Dhariwal_Radford_Klimov_2017}).
 
 \textbf{SAC} (ou Soft Actor-Critic) é um algoritmo to tipo off-policy que visa maximizar o retorno esperado e entropia, isto é, obtem progresso agindo mais aleatoriamente possível. Isso é para evitar um problema comum em métodos que lidam com algoritmos de aprendizado de reforço que são livres de modelo: fragilidade a hiper-parametros (quando uma pequena mudança nestes gera um disturbio muito grande no desempenho do treino)(\citeonline{Haarnoja_zhou_Hartikainen_2018})
+
+\section{Aprendizado por Imitação}
+Um dos problemas que ocorre com \textbf{AR} é a sua ineficiência no início do aprendizado não haver nenhuma refêrencia e suas ações serem randômicas e por isso existe uma enorme dificuldade em fazer um agente aprender uma tarefa executada por humanos. Para isso existe o Aprendizado por Imitação que se baseia em criar um agente que aprenda através de uma demonstração dada por um especialista (geralemente um humano executando a tarefa), no caso essa demonstração seria uma amostragem de trajetórias feitas por ele.
+
+Há duas abordagens principais para isso: \textbf{Clonagem de comportamento} (\textbf{BC}, do inglês \textit{Behavioural Cloning}) e Aprendizado por Reforço Inverso (\textbf{IRL}, do inglês \textit{Inverse Reinforcement Learning})(\citeonline{1606.03476}).
+
+Behavioural Cloning baseia-se em aprender uma política como se fosse um problema de aprendizado supervisionado tratando a trajetória, um conjunto de pares estado-ação, como uma base de dados rotulada (\citeonline{Pomerleau1991}).
+
+Inverse Reinforcement Learning busca a função de recompensa usando a experiência do especialista.
