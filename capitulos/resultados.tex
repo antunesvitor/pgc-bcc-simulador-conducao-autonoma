@@ -4,31 +4,13 @@
 
 O primeiro e único treino foi executado como agente percorrendo somente um percurso em linha reta, conforme a imagem abaixo.
 
-\subsection*{Resumo}
-
-O treino foi no \textit{path(8)} da estrutura do projeto (ver apêndice).
-% TODO: criar um apêndice  da estrutura completa de gameobjects do projeto
-\begin{table}[htpb]
-    \centering
-    \caption{Configuração do treino do trajeto específico fácil}
-    \begin{tabular}{|l|p{2cm}|p{3cm}|p{3cm}|p{3.5cm}|}
-         \hline
-         \small{Rota(s)} & \small{Algoritmo} &          \small{params. PPO}         & \small{params. gerais} &          \small{params. RN}        \\ \hline
-            Path(8)      &      PPO          &     beta: 1e-5 \newline epsilon: 0.3 &    max\_steps: 5e5  &    num\_layer:2 \newline hidden\_units:128  \\ \hline
-    \end{tabular}
- \end{table}
-
 \begin{figure}[h]
     \centering
-    \includegraphics[scale=0.35]{figs/rotas/path_14.png}
+    \includegraphics[scale=0.25]{figs/rotas/path_14.png}
      \caption{O percurso executado no primeiro treino. A cápsula vermelha no canto inferior direito indica a posição inicial do veículo e a na parte superior esquerdo indica o destino.}
      \label{fig:rota-1}
 \end{figure}
  
-\subsection*{Estatísticas}
-
-Abaixo segue os gráficos dos dados coletados deste treino. 
-
 \begin{figure}[h]
     \centering
     \includegraphics[scale=0.35]{figs/treinos/treino-1/política.png}
@@ -44,65 +26,32 @@ Abaixo segue os gráficos dos dados coletados deste treino.
 \end{figure}
 
 \subsection*{Análise}
-O treino foi bem sucedido, o agente soube conduzir bem o veículo. Vendo o gráfico 1 da figura 9, pode se notar o crescimento exponencial da recompensa e então sua estabilização quando atinge o máximo da recompensa que é possível receber. Também percebe-se que na mesma velocidade mas desta vez em sentido descendente a duração média do episódio, rapidamente cai pois o agente já dominou o trajeto. Isso é o suficiente para este trajeto, podemos treinar o agente em um novo desafio especifíco mas com um trajeto mais complexo.
+O treino foi bem sucedido, o agente soube conduzir bem o veículo. Vendo o gráfico 1 da figura 9, pode-se notar o crescimento exponencial da recompensa e então sua estabilização quando atinge o máximo da recompensa que é possível receber. Também percebe-se que na mesma velocidade mas desta vez em sentido descendente a duração média do episódio, rapidamente cai pois o agente já dominou o trajeto. Isso é o suficiente para este trajeto, podemos treinar o agente em um novo desafio especifíco mas com um trajeto mais complexo.
+
 
 \section{Desafio em trajeto específico dificuldade média}
 Aqui o treino foi feito em dois trajetos (identificados por Path(8) e Path(0) no projeto), ambos exigem que o agente faça uma conversão do veículo.
 
-\subsection*{Resumo}
-Neste desafio foi necessário uma melhoria no agente, foi aumentado bastante o número de sensores, agora ele possui dois \textit{compenents} Ray Perception sensor 3D, o primeiro é para visão frontal e detecta os checkpoints e obstáculos e o segundo é uma visão para todas as direções do carro servindo para detecção apenas de obstáculos. Isso foi necessário pois na primeira versão havia pontos cegos, durante os testes o veículo não completava pois os sensores não detectavam o destino em sua frente.
+Neste desafio foi necessário uma melhoria no agente, foi aumentado o número de sensores, agora ele possui dois \textit{components} Ray Perception Sensor 3D, o primeiro é para visão frontal e detecta os checkpoints e obstáculos e o segundo é uma visão para todas as direções do carro servindo para detecção apenas de obstáculos. Isso foi necessário pois na primeira versão havia pontos cegos, durante os testes o veículo não completava pois os sensores não detectavam o destino em sua frente.
 
-%considerar criar um apêndice detalhando os sensores das versões do veículo
-\begin{figure}[h]
-    \centering
-    \includegraphics[scale=0.35]{figs/treinos/desafio-mediano/novo-modelo-agente.png}
-     \caption{Visão lateral do novo veículo. Os superiores em verde que tem uma visão frontal, e os inferiores em vermelho que cobrem toda a volta do veículo.}
-     \label{fig:desafio-2-novo-agente}
-\end{figure}
-
-
-
-\begin{table}[htpb]
-    \centering
-    \caption{Configuração do treino do trajeto específico de dificuldade mediana}
-    \begin{tabular}{|l|p{2cm}|p{3cm}|p{3cm}|p{3.5cm}|}
-         \hline
-         \small{Rota(s)} & \small{Algoritmo} &          \small{params. PPO}         & \small{params. gerais} &          \small{params. RN}              \\ \hline
-            Path(8)      &      PPO          &     beta: 1e-3 \newline epsilon: 0.3 &    max\_steps: 1e6  &    num\_layer:2 \newline hidden\_units:256  \\ \hline
-            Path(0)      &      PPO          &     beta: 1e-3 \newline epsilon: 0.3 &    max\_steps: 1e6  &    num\_layer:2 \newline hidden\_units:256  \\ \hline
-    \end{tabular}
- \end{table}
-
-\subsection*{Estatísticas}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[scale=0.35]{figs/treinos/desafio-mediano/path0/politica.png}
-    \caption{Estatísticas referentes a política do segundo desafio na rota zero.}
+    \includegraphics[scale=0.35]{figs/treinos/desafio-mediano/politica.png}
+    \caption{Estatísticas referentes a política do segundo desafio nas duas rotas, em verde a rota \textit{Path(8)} e em roxo a rota \textit{Path(0)}.}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[scale=0.35]{figs/treinos/desafio-mediano/path0/ambiente.png}
-    \caption{Estatísticas do ambiente do segundo desafio na rota zero.}
+    \includegraphics[scale=1.5]{figs/treinos/desafio-mediano/ambiente-2por2.png}
+    \caption{Estatísticas do ambiente do segundo desafio para ambas as rotas. Em cima os gráficos de recompensa e duração do episódio, abaixo os histogramas.}
 \end{figure}
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[scale=0.35]{figs/treinos/desafio-mediano/path8/politica.png}
-    \caption{Estatísticas referentes a política do segundo desafio na rota 8.}
-\end{figure}
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[scale=0.35]{figs/treinos/desafio-mediano/path8/ambiente.png}
-    \caption{Estatísticas do ambiente do segundo desafio na rota 8.}
-\end{figure}
 \subsection*{Análise}
-O modelo novo do veículo não teve problemas para 
+O treinamento não encontrou problemas para convergir neste desafio, para ambas as rotas foram dados 500 mil passos de treino mas por volta de 400 mil passos a recompensa mediana se estabilizou no topo mostrando que o modelo convergiu. De acordo com os histrogramas o agente conclui praticamente todos os episódios e isso se reflete nos testes onde o agente chega ao destino em todos as tentativas, subindo a calçada somente uma única vez.
 
 \section{Desafio em trajeto específico difícil}
-\subsection*{Resumo}
 Para este desafio foi testado em três rotas diferentes, duas delas possui duas curvas e a terceira possui três curvas.
 
 \begin{figure}[h]
@@ -111,36 +60,22 @@ Para este desafio foi testado em três rotas diferentes, duas delas possui duas 
     \caption{As três rotas difíceis envolve mais de uma curva, a esquerda o path(3) que possui três curvas sendo o mais complexo dos trajetos. Os outros dois são o path(5) e path(6) que possuem 2 curvas cada.}
 \end{figure}
 
-\begin{table}[htpb]
+\begin{figure}[h]
     \centering
-    \caption{Configuração do treino do trajeto específico de dificuldade mediana}
-    \begin{tabular}{|l|p{2cm}|p{3cm}|p{3cm}|p{3.5cm}|}
-         \hline
-         \small{Rota(s)} & \small{Algoritmo} &          \small{params. PPO}         & \small{params. gerais} &          \small{params. RN}              \\ \hline
-            Path(3)      &      PPO          &     beta: 1e-3 \newline epsilon: 0.2 &    max\_steps: 2.4e6  &    num\_layer:2 \newline hidden\_units:256  \\ \hline
-            Path(5)      &      PPO          &     beta: 1e-3 \newline epsilon: 0.3 &    max\_steps: 1e6  &    num\_layer:2 \newline hidden\_units:256  \\ \hline
-            Path(6)      &      PPO          &     beta: 1e-3 \newline epsilon: 0.3 &    max\_steps: 1e6  &    num\_layer:2 \newline hidden\_units:256  \\ \hline
-    \end{tabular}
- \end{table}
+    \includegraphics[scale=0.35]{figs/treinos/desafio-dificil/politica.png}
+    \caption{Estatísticas referentes a política do desafio em rotas difíceis. \textit{Path(3)}, \textit{Path(5)} e \textit{Path(6)} em laranja, azul e magenta, respectivamente.}
+\end{figure}
 
-\subsection*{Estatísticas}
-
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=1.25]{figs/treinos/desafio-dificil/ambiente-completo.png}
+    \caption{Estatísticas referentes ao ambiente do desafio em rotas difíceis. Em cima os gráficos da recompensa e duração dos episódios, abaixo os histrogramas de recompensa.}
+\end{figure}
 
 \subsection*{Análise}
-
+Neste desafio ficou claro que o agente teve muito mais dificuldade de convergir para ter um desempenho ótimo. Embora os três trajetos estejam no mesmo grupo de desafio cada uma das três rotas exigiu uma quantidade de steps maior para covergir, o \textit{Path(5)}, que envolvia fazer duas curvas a direita, foi o mais fácil para o agente, o treino durou 800 mil passos mas por volta de 500 mil steps já havia atingido a média máxima de recompensa. Porém, as rotas Path(3) e Path(6) demoraram respectivamente 3,2 milhões e 2,4 milhões de steps para atingir o mesmo nível, sendo que ao final do treino o primeiro ainda ficou com uma recompensa média ligeiramente abaixo dos demais.
 \section{Desafio em todos os trajetos}
-\subsection*{Resumo}
-Por fim foi realizado o teste em todos os trajetos. Neste desafio não foi necessário qualquer alteração no agente.
-\begin{table}[htpb]
-    \centering
-    \caption{Configuração do treino do trajeto específico de dificuldade mediana}
-    \begin{tabular}{|l|p{2cm}|p{3cm}|p{3cm}|p{3.5cm}|}
-         \hline
-         \small{Rota(s)} & \small{Algoritmo} &          \small{params. PPO}             & \small{params. gerais} &          \small{params. RN}                  \\ \hline
-            TODAS        &      PPO          &     beta: 1e-3 \newline epsilon: 0.3     &    max\_steps: 1.2e6   &    num\_layer:2 \newline hidden\_units:256   \\ \hline
-    \end{tabular}
-\end{table}
-\subsection*{Estatísticas}
+
 \begin{figure}[h]
     \centering
     \includegraphics[scale=0.35]{figs/treinos/desafio-geral/politica.png}
@@ -155,7 +90,7 @@ Por fim foi realizado o teste em todos os trajetos. Neste desafio não foi neces
 
 \begin{table}[htpb]
     \centering
-    \caption{Consolidado do completo do teste de todas tentativas e suas recompensas e a recompensa média por rota.}
+    \caption{Consolidado do teste geral, inclui todas tentativas e suas recompensas e a recompensa média por rota.}
     \label{resultado-tabela-geral}
     \begin{tabular}{|l|c|c|c|c|c|c|r|}
          \hline
