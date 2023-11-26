@@ -98,7 +98,7 @@ E por ser uma distribuição de probabilidades, temos:
 
 Sendo $A(s)$ é o conjunto de todas as ações que podem ser tomadas no estado $s$.
 
-Em um MDP, a probabilidade de cada valor de $S_t$ e $R_t$ depende \textit{apenas} de $S_{t-1}$ e $A_{t-1}$ e de nenhum outro estado anterior a este. Então um estado $S_t$ contém toda a informação de interações passadas entre o agente e o ambiente, essa caraterística do estado é chamada de \textbf{propriedade de Markov}. 
+Em um MDP, a probabilidade de cada valor de $S_t$ e $R_t$ depende apenas de $S_{t-1}$ e $A_{t-1}$ e de nenhum outro estado anterior a este. Essa caraterística  é chamada de \textbf{propriedade de Markov}. 
 
 O comportamento do agente é moldado pelas recompensas que recebe a cada ação que toma, este sinal de recompensa é o que indica se o agente está executando a tarefa apropriadamente ou não. Diferente dos estados $S$ e ações $A$, que podem assumir qualquer forma, o conjunto $R$ é um conjunto de números reais: $r \in R \in \mathbb{R}$. A fórmula que deve ser maximizada é chamada de \textbf{retorno esperado}, é denotado por $G_t$:
 
@@ -173,7 +173,7 @@ Existem muitas formas de se chegar aos valores das funções (\ref{state-value-o
 %Considerar fazer um resumo melhor sobre Monte Carlo e Q-Learning (exigirá mais leitura, deixar pra dps)
 Outro método seria \textbf{Monte Carlo}, que não assume total conhecimento do ambiente (condição necessária para otimizar com programação dinâmica) e utiliza-se de experiência prévia. Por fim temos \textbf{Q-learning} que combina um pouco dos dois. Apesar destes métodos terem suas aplicações, não discorreremos aqui sobre eles, pois, como foi explicado anteriormente, a tarefa que o agente condutor executará não é um MDP finito. 
 
-A condução de um veículo autônomo não possui um número finito de estados, pelo contrário, se considerarmos o uso de visão computacional com processamento de imagem a quantidade de estados possíveis se torna virtualmente infinito. Os problemas que um MDP finito resolve são \textbf{tabulares}, isto é, podem ser dispostos em uma tabela, onde se guardaria a relação com ações válidas, seus valores, etc. Além disso, um estado não irá possuir a \textbf{propriedade Markov}, isto é, não possui informação passadas da interação agente-ambiente.
+A condução de um veículo autônomo não possui um número finito de estados, pelo contrário, se considerarmos o uso de visão computacional com processamento de imagem a quantidade de estados possíveis se torna virtualmente infinito. Os problemas que um MDP finito resolve são \textbf{tabulares}, isto é, podem ser dispostos em uma tabela, onde se guardaria a relação com ações válidas, seus valores, etc.
 
 Para isso há os \textbf{métodos de aproximação}, onde a quantidade de estados possíveis é tão grande que podemos assumir que o agente nunca passará pelo mesmo estado novamente. Portanto, uma abordagem em que alterar um valor $v(s)$ não altera o valor de outro estado semelhante $v(s')$ não parece útil, ao invés disso precisamos assumir que a valorização de um estado implique na valorização de outro. Além disso, temos o fato de que é inviável calcular  $v_\ast(s)$ para todo $s \in S$, então agora será explorado os métodos de \textbf{aproximação}, que se baseia em utilizar uma função valor do tipo $\hat{v}(s, \mathbf{w}) \approx v_\ast(s)$ e $\mathbf{w} \in \mathbb{R}^d$. Dessa forma $\hat{v}$ pode ser tanto uma função linear com $\mathbf{w}$ sendo um vetor dos coeficientes quanto uma rede neural com $\mathbf{w}$ sendo os pesos das conexões.
 
@@ -190,11 +190,19 @@ Como foi mencionado na introdução, o pacote ML-Agents possui dois algoritmos d
 
 \textbf{SAC} (ou Soft Actor-Critic) é um algoritmo to tipo off-policy que visa maximizar o retorno esperado e entropia, isto é, obtem progresso agindo mais aleatoriamente possível. Isso é para evitar um problema comum em métodos que lidam com algoritmos de aprendizado de reforço que são livres de modelo: fragilidade a hiper-parametros (quando uma pequena mudança nestes gera um disturbio muito grande no desempenho do treino)(\citeonline{Haarnoja_zhou_Hartikainen_2018})
 
+
 \section{Aprendizado por Imitação}
-Um dos problemas que ocorre com \textbf{AR} é a sua ineficiência no início do aprendizado não haver nenhuma refêrencia e suas ações serem randômicas e por isso existe uma enorme dificuldade em fazer um agente aprender uma tarefa executada por humanos. Para isso existe o Aprendizado por Imitação que se baseia em criar um agente que aprenda através de uma demonstração dada por um especialista (geralemente um humano executando a tarefa), no caso essa demonstração seria uma amostragem de trajetórias feitas por ele.
+Um dos problemas que ocorre com Aprendizado por Reforço é a sua ineficiência no aprendizado por no início do treino suas ações serem randômicas existindo uma enorme dificuldade em fazer um agente aprender uma tarefa executada por humanos. Para isso existe o Aprendizado por Imitação (\textbf{IL}, do inglês Imitation Learning) que são métodos os quais o agente adquire habilidades ou comportamentos ao observar uma demonstração da dada tarefa executada por um especialista. Neste paradigma o agente consegue moldar uma política geral para baseado no conjunto de dados vindos do demonstrador.
 
-Há duas abordagens principais para isso: \textbf{Clonagem de comportamento} (\textbf{BC}, do inglês \textit{Behavioural Cloning}) e Aprendizado por Reforço Inverso (\textbf{IRL}, do inglês \textit{Inverse Reinforcement Learning})(\citeonline{1606.03476}).
+Uma abordagem de \textbf{IL} é a \textbf{Clonagem de comportamental} (\textbf{BC}, do inglês \textit{Behavioural Cloning}), que utiliza-se de aprendizado supervisionado, onde os dados são os estados e os rótulos seriam as ações. O conjunto de dados fornecidos pelo especialista seria então um conjunto de trajetórias $D$ composto por pares $(S_t, a_t)$, onde $S_t$ é um vetor de observações do agente e o $a_t$ seria a ação tomada (rótulo)(\citeonline{Hussein2017}).
 
-Behavioural Cloning baseia-se em aprender uma política como se fosse um problema de aprendizado supervisionado tratando a trajetória, um conjunto de pares estado-ação, como uma base de dados rotulada (\citeonline{Pomerleau1991}).
+O problema com Aprendizado por Imitação é que sozinho não é suficiente para resolver problemas mais complexos, especialmente se envolvem ações contínuas. Erros na demonstração e uma generalização ruim podem fazer com que o agente não encontre uma política ótima ficando preso em um mínimo local. Quando a complexidade do problema aumenta, com vetores de muitas observações contínuas, encontrar durante o treino o mesmo ou um estado semelhante a um do conjunto de demonstração se torna improvável,levando a uma incapacidade de generalizar a política e consequentemente a um desempenho fraco (\citeonline{NIPS2016_cc7e2b87}).
 
-Inverse Reinforcement Learning busca a função de recompensa usando a experiência do especialista.
+Um conceito dentro de IL é Aprendizado por Reforço Inverso (\textbf{IRL}, do inglês \textit{Inverse Reinforcement Learning}), seu propósito é extrair a função de recompensa dado um comportamento (ótimo) observado nas demonstrações. IRL é ideal quando não é possível ou é difícil criar uma função de recompensa manualmente(\citeonline{Russell1998}), então com as demonstrações o algoritmo busca uma aproximação linear a seguinte função:
+
+\begin{equation}
+   R(s) = \alpha_1 \phi_1(s) + \alpha_2 \phi_2(s) + ... + \alpha_d \phi_d(s),
+\end{equation}
+
+sendo $\phi_1, ..., \phi_d$ são funções do tipo $S \mapsto \mathbb{R}$ e os $\alpha_i$'s são os parâmetros que queremos ajustar.
+
