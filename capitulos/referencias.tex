@@ -1,9 +1,11 @@
 % ---
 \chapter{Fundamentação teórica}
+\addcontentsline{toc}{chapter}{Fundamentação teórica}
 % ---
 Neste capítulo será introduzido os conceitos e fundamentos das teorias e tecnologias utilizadas neste projeto. Será abordado sobre autonomia de veículos como o que define um carro autônomo e os diferentes níveis de autonomia. Também abordará o que é um motor de jogo e a principal ferramenta que usaremos para desenvolver um ambiente simulado, a Unity 3D. Por fim, definição de IA, os paradigmas de aprendizado de máquina com um aprofundamento em aprendizado por reforço.
 
 \section{Veículos autônomos}
+\addcontentsline{toc}{section}{Veículos autônomos}
 A SAE (Society of Automotive Engineers) define 6 níveis de autonomia para veículos, do zero ao cinco (\citeonline{SAE2014}). O primeiro, nível zero, não possui automação de direção alguma, é limitado a apenas a tecnologias de assistência como freios ABS ou freio automático emergencial. Um veículo com automação de nível um já passa a possuir alguns recursos que ajudam na direção, como controle para manter o carro na via, controle de velocidade a fim de manter distância de outro veículo a frente. Os níveis dois e três são definidos por, respectivamente, "direção parcialmente automática" e "direção automática condicional", a diferença de ambos pode ser bem sútil, pois em ambos os casos a automação teria o controle do volante, acelerador e freio, no primeiro seria apenas para atividades mais simples, como dirigir na estrada mantendo a velocidade e distâncias, enquanto no nível três o veículo assumiria o controle por um período, podendo até fazer manobras mais avançadas, como ultrapassar um automóvel mais lento a frente. Em ambos os níveis ainda é necessário a atenção máxima do condutor para assumir o controle quando for necessário.
 
 Nos últimos dois níveis de autonomia, temos um veículo que seria capaz de exercer qualquer atividade sem intervenção humana, no nível 4 não seria necessário que o motorista estivesse a condução, só assumiria o controle quando necessário, nesses níveis é capaz inclusive que o automóvel assuma o controle quando necessário, e o mesmo poderia ainda nem possuir volante ou pedais.
@@ -19,6 +21,7 @@ A partir do momento que o comportamento foi selecionado, o controle de moção d
 O controle do veículo se define pelo controle dos atuadores mecânicos do automóvel para que tenha uma resposta em retorno, essa constante troca de informação é necessária para o controle de moção do veículo atue apropriadamente.
 
 \section{Motores de jogos}
+\addcontentsline{toc}{section}{Motores de Jogos}
 Um motor de jogo (do inglês \textit{game engine}) é um \textit{software} com o objetivo primário de se criar jogos eletrônicos. Estes programas inclui diversas ferramentas que auxiliam o desenvolvedor de jogos a criar seu produto, não existe uma definição sobre quais destas um software deve possuir para ser considerado um motor de jogo, mas frequentemente possuem módulos que lidam com \textit{input} de usuário, renderização de gráficos 2D e 3D, som, motor de física (onde se lida com gravidade e colisão), animação, gerenciamento de memória entre outros (\citeonline{Andrade2015}). 
 
 % Considerar escrever um pouco sobre outros usos de uma game engine aqui, talvez seja necessário para fortalecer o argumento que uma game engine pode ser usada para um simulador e não apenas jogos podendo ter um uso mais "sério"
@@ -30,6 +33,7 @@ Inicialmente foi considerado o uso de outros motores de jogo, como a Unreal Engi
 A Unity 3D também possui uma biblioteca de ferramentas própria para criação de agentes inteligentes chamada de \textbf{Unity ML Agent Toolkit}, que foi escrita usando \textbf{Pytorch}, uma biblioteca \textbf{Python} para criação de redes neurais. A Unity ML Agent toolkit oferece um aparato para se criar um agente inteligente, onde é configurado sensores e ações (o que seria a primeira e última camada de uma rede neural) podendo ser treinado usando aprendizado por reforço, por imitação, neuroevolução, entre outros.
 
 \subsection{Editor da Unity3D}
+\addcontentsline{toc}{subsection}{Editor da Unity3D}
 Dentre as principais janelas da interface da Unity3D, temos: hierarquia, projeto, visualização da cena e inspetor. A primeira se trata dos elementos que há dentro da cena (pode-se entender como sendo um trecho do jogo, como este projeto contém apenas uma única cena não é necessário que o leitor entenda tudo que uma cena pode ser), estes elementos são chamados de \textit{GameObjects}, eles são uma abstração de qualquer item dentro do jogo, incluindo o personagem que o jogador controla, o cenário com o qual interage, a "câmera" com o qual o jogo é visto também é um \textit{GameObject}. A primeira janela é chamada de hierarquia porque o conjunto destes objetos podem formar uma estrutura em árvore, por exemplo, podemos criar um objeto "árvore" que conteria os objetos "raiz", "tronco" e "folhas" como seus objetos aninhados. Na seção da proposta é explicado a estrutura deste projeto com mais detalhes.
 
 \begin{figure}[h]
@@ -46,6 +50,7 @@ A última janela é o inspetor, nela é exibido os detalhes dos \textit{GameObje
 Os conceitos de como funciona um desenvolvimento de jogo dentro do editor da Unity3D podem não ter ficado claro ao leitor, porém na parte sobre o sistema proposto deste artigo é explicado em mais detalhes a estrutura do projeto.
 
 \section{Inteligência Artificial}
+\addcontentsline{toc}{section}{Inteligência Artificial}
 Não existe uma definição única sobre o que é Inteligência Artificial (IA), o mesmo pode ser dito quanto ao seu objetivo. Porém, para compreender melhor o seu escopo, pode-se dizer que está interessada em criar um programa de computador que faça uma ou mais dos seguintes tópicos: pensar humanamente, agir humanamente, pensar racionalmente e agir racionalmente. Pensar pode ser entendido como o processo de pensamento, de compreender e argumentar enquanto agir pode ser entendido como tomar ações e possuir um certo comportamento. Humanamente mediria o quanto a Inteligência Artificial consegue se aproximar de um desempenho humano (agindo ou pensando), e racionalmente é quando há o interesse em pensar ou agir de forma ideal, isto é, que faça "a coisa certa" (\citeonline{Russell2009-dn}).
 
 Uma IA que age racionalmente, pode ser entendido como um programa de computador que toma decisões autonomamente. De fato, qualquer algoritmo pode ser criado para tomar decisões de acordo com uma série de condições, mas é esperado mais de um \textbf{agente racional}, ele é criado para observar o ambiente em que está inserido e tomar decisões por um período prolongado, adaptando-se a qualquer mudança e procurando cumprir seu \textbf{objetivo} fazendo isso de forma ideal, não cometendo erros, e quando estes forem inevitáveis, deverá agir de forma a minimizar o dano causado (\citeonline{Russell2009-dn}).
@@ -54,6 +59,7 @@ Para desenvolvimento de um veículo autônomo que este artigo se propõe a estud
 
 %-
 \subsection{Aprendizado de máquina}
+\addcontentsline{toc}{subsection}{Aprendizado de máquina}
 %-
 Aprendizado de máquina é qualquer processo automatizado que tem como objetivo reconhecer um padrão dentro de um conjunto de dados (\citeonline{Kelleher2015-iw}), em aprendizado de máquina o projetista cria um agente-aprendiz, fornece os dados e define um objetivo a fim de fazer seu agente melhorar seu desempenho na tarefa após sucessivas iterações observando os dados o tomando decisões. 
 
@@ -61,12 +67,14 @@ Há dois paradigmas em AM que valem a pena ser mencionados brevemente antes de i
 
 % ---
 \section{Aprendizado por reforço}
+\addcontentsline{toc}{section}{Aprendizado por Reforço}
 % ---
 No aprendizado por reforço o objetivo é sempre fazer com que o agente aprenda a executar uma tarefa, se trata de ensiná-lo a como fazer. O agente está inserido em um ambiente e a ele é dado um objetivo, com isso ele deve aprender a tomar as decisões corretas nas situações apropriadas visando seu propósito. O aprendiz não é instruído sobre quais ações tomar em dadas circunstâncias, ao invés disso o agente aprenderá a tomar as decisões com base na orientação do treinamento, que envolve em premiá-lo quando agir idealmente ou penalizá-lo caso contrário. Esse parecer que o agente recebe é um valor numérico a ser maximizado por ele, e o dever do projetista é programar os critérios que decidem não somente o que é recompensador ou penalizador, mas o quanto é.
 
 A seguir será formalizado como esse proceso ocorre, toda esta seção é baseada em \citeonline{rl-sutton-barto}, exceto quando abordarmos sobre os algoritmos de otimização de política. É importante esclarecer aqui que a formalização a seguir se trata de tipos de problemas mais simples do que iremos lidar neste projeto, porém essa introdução é necessária para compreender os conceitos mais avançados serão vistos posteriormente.
 
 \subsection{Processo de tomada de decisão} \label{mdp-section}
+\addcontentsline{toc}{subsection}{Processo de tomada de decisão}
 Neste paradigma, o \textit{agente} toma uma decisão $A_t$ que afeta o \textit{ambiente} o qual está inserido, que retorna a ele um estado $S_{t+1}$ e uma recompensa $R_{t+1}$. O conjunto $S$ representa todos os estados possíveis do ambiente, cada estado $s$ representa toda a observação que o agente tem do sistema. 
 
 \begin{figure}[h]
@@ -165,6 +173,7 @@ similarmente, para acharmos a \textit{função valor da ação} ótima:
 % É importante esclarecer aqui que o ato de condução de um veículo \textbf{não é} um problema que pode ser resolvido por MDP, pois possui um número virtualmente infinito de estados e as etapas não são definidas em tempos discretos $t \in \{0,1,2,...\}$. De qualquer forma, é importante discorrer sobre MDPs para se entender o processo de tomada de decisão, o que é política e como otimizá-la.
 
 \subsection{Algoritmos de otimização de política e conceito de aproximação}
+\addcontentsline{toc}{subsection}{Algoritmos de otimização de política e conceito de aproximação}
 % Texto temporário abaixo explicando o que será cobrido nesta seção 
 Nesta seção será abordado mais sobre os diferentes tipos de algoritmos de otimização de política, principalmente o PPO, SAC que estão disponíveis no ML-Agents da Unity 3D. 
 
@@ -178,6 +187,7 @@ A condução de um veículo autônomo não possui um número finito de estados, 
 Para isso há os \textbf{métodos de aproximação}, onde a quantidade de estados possíveis é tão grande que podemos assumir que o agente nunca passará pelo mesmo estado novamente. Portanto, uma abordagem em que alterar um valor $v(s)$ não altera o valor de outro estado semelhante $v(s')$ não parece útil, ao invés disso precisamos assumir que a valorização de um estado implique na valorização de outro. Além disso, temos o fato de que é inviável calcular  $v_\ast(s)$ para todo $s \in S$, então agora será explorado os métodos de \textbf{aproximação}, que se baseia em utilizar uma função valor do tipo $\hat{v}(s, \mathbf{w}) \approx v_\ast(s)$ e $\mathbf{w} \in \mathbb{R}^d$. Dessa forma $\hat{v}$ pode ser tanto uma função linear com $\mathbf{w}$ sendo um vetor dos coeficientes quanto uma rede neural com $\mathbf{w}$ sendo os pesos das conexões.
 
 \subsection{Métodos de gradiente de política e de ator-crítico}
+\addcontentsline{toc}{subsection}{Métodos de gradiente de política e de ator-crítico}
 Métodos de gradiente de política são uma abordagem diferente das já mencionadas acima, no caso a atualização da política não depende das funcões valores das ações, em vez disso temos $\pi(a|s, \mathbf{\theta}) = \Pr\{A_t = a | S_t = s, \mathbf{\theta}_t = \mathbf{\theta}\}$ para  a probabilidade de ação $a$ ser selecionada  no tempo $t$ dado que o ambiente se encontra no estado $s$ com parâmetros $\mathbf{\theta} \in \mathbb{R}^{d'}$. Agora o interesse é atualizar $\mathbf{\theta}$ a fim de aprimorar a política da seguinte forma:
 
 \begin{equation}
@@ -204,5 +214,6 @@ Um conceito dentro de IL é Aprendizado por Reforço Inverso (\textbf{IRL}, do i
    R(s) = \alpha_1 \phi_1(s) + \alpha_2 \phi_2(s) + ... + \alpha_d \phi_d(s),
 \end{equation}
 
-sendo $\phi_1, ..., \phi_d$ são funções do tipo $S \mapsto \mathbb{R}$ e os $\alpha_i$'s são os parâmetros que queremos ajustar.
+sendo $\phi_1, ..., \phi_d$ são funções do tipo $S \mapsto \mathbb{R}$ e os $\alpha_i$'s são os parâmetros que queremos ajustar. Aproximando esta função de recompensa, o IRL consegue encontrar a política ótima do especialista.
 
+Com isso podemos apresentar o último algoritmo que será utilizado neste projeto: \textbf{GAIL} (do inglês \textit{Generative Adversarial Imitation Learning}) (\citeonline{NIPS2016_cc7e2b87}). Este algoritmo utiliza-se de GANs (\textit{Generative Adversarial Networks}) removendo assim a restrição de que o custo pertence a uma classe limitada de funções, ao invés disso permite que seja aprendido usando aproximadores de funções expressivas como redes neurais. Além disso utilizando-se de TRPO (\textit{Trust Region Policy Optimization}), GAIL consegue encontrar diretamente a política em vez de funções valores intermediárias (\citeonline{2006.06412}).

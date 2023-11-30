@@ -46,7 +46,7 @@ Para o encerramento do episódio temos os seguintes cenários possíveis: o agen
 \begin{itemize}
    \item Chega ao destino: $R_T = R_d + R_c - P_c - P_p$
    \item Não chega a tempo: $R_T = R_c - P_{step} - P_c - P_p$
-   \item Tomba o carro: $R_T = P_t \doteq -1$
+   \item Tomba o carro: $R_T = P_t = -1$
 \end{itemize}
 
 Sendo $R_T$ a recompensa total do episódio, $R_c$, $P_c$ e $P_p$ representam a soma total de ocorrências de $r_c$, $p_c$ e $p_p$. Vale ressaltar que $R_d + R_c = 1$, isto quer dizer que se o veículo chegar ao destino sem se chocar com a calçada ou parede, terá a recompensa máxima, por outro lado $P_t = -1$, indicando que caso o veículo tombe, não interessa quantos checkpoints ele atingiu, a punição é máxima. Podemos interpretar o segundo cenário como: caso o veículo não chegue a tempo recebe uma recompensa pelo progresso ($R_c$) descontado com punição por tempo mais as punições por colisões. Sobre $r_c$, seu valor está sujeito ao trajeto do episódio, como eles possuem tamanho diferente, o valor a recompensa segue na forma $r_{c_x} \doteq \frac{R_c}{n_{c_x}}$, sendo $n_{c_x}$ a quantidade de checkpoints naquela rota $x$.
@@ -69,7 +69,7 @@ Para o projeto foi feito uma adaptação neste código-fonte, em vez de se aplic
 
 O agente no projeto pode ser entendido como o conjunto de \textit{components} que fazem parte do GameObject pai, o "Car", seriam eles: behavior Parameters, o Car Agent, o Decision Requester e o Ray Perception sensor 3D. 
 
-\section{Os algoritmos e hiper-parâmetros}\label{algoritmos}
+\section{Os algoritmos e hiperparâmetros}\label{algoritmos}
 Para executar o treino é necessário especificar para o \textbf{ml-agents} o algoritmo e suas configurações, para isso existe um arquivo \textbf{.yaml} que é responsável por isso. Abaixo, um exemplo seguido da explicação de cada parâmetro:
 
 \begin{lstlisting}
@@ -102,7 +102,7 @@ behaviors:
             strength: 1.0
 \end{lstlisting}
 
-O arquivo começa com o \textbf{behaviors} que é uma lista de configurações dos comportamentos do agente, neste projeto haverá apenas um que é chamado \textbf{MoveToTarget}. Abaixo segue uma lista dos hiper-parâmetros mais relevantes, o texto aqui é em grande parte traduzido da documentação oficial do \textbf{ml-agents} (\citeonline{juliani2020}) com algumas remoções de informações não relevantes pra este projeto e com alguns adendos do autor caso necessário.
+O arquivo começa com o \textbf{behaviors} que é uma lista de configurações dos comportamentos do agente, neste projeto haverá apenas um que é chamado \textbf{MoveToTarget}. Abaixo segue uma lista dos hiperparâmetros mais relevantes, o texto aqui é em grande parte traduzido da documentação oficial do \textbf{ml-agents} (\citeonline{juliani2020}) com algumas remoções de informações não relevantes pra este projeto e com alguns adendos do autor caso necessário.
 
 \begin{description}
    \item [trainer\_type:] O algoritmo que será usado, neste projeto serão PPO ou SAC
@@ -126,46 +126,83 @@ O arquivo começa com o \textbf{behaviors} que é uma lista de configurações d
 \end{description}
 
 \section{Desenvolvimento}\label{metodologia}
-A análise e desenvolvimento do agente se dará tanto no treino quanto nos testes. O objetivo final é chegar a um agente que saiba percorrer todos os 17 trajetos de forma eficiente, para isso é preciso analisar as estatísticas produzidas pelo treino, saber se a política se aproximou suficientemente do comportamento ótimo de modo que cometa erros. Antes que se chegue a este nível é preciso que ele demonstre sucesso em treinos mais simples, então dividimos as etapas em 4 \textbf{desafios}. Os três primeiros serão em trajetos específicos, mas com níveis diferentes de dificuldade. O último será o treino o desafio geral, onde ele deve percorrer qualquer rota dada a ele.
+O objetivo final é chegar a um agente que saiba percorrer todos os 17 trajetos de forma eficiente, para isso é preciso analisar as estatísticas produzidas pelo treino, saber se a política se aproximou suficientemente do comportamento ótimo de modo que não cometa erros. Antes que se chegue a este nível é preciso que ele demonstre sucesso em treinos mais simples, então dividimos as etapas em 3 \textbf{desafios}. Os dois primeiros serão em trajetos específicos, mas com níveis diferentes de dificuldade. O último será o treino o desafio geral, onde ele deve percorrer qualquer rota dada a ele.
 
-Como foi dito na seção \nameref{sec:objetivos}, o estudo não propõe um modelo imutável, ao invés disso, é esperado que o agente evolua em diversas frentes: seus sensores, os métodos de treino, os algoritmos, o ambiente envolvido se torne mais realista, entre outros. Como será visto no Capítulo \ref{cap:resultados}, o agente e ambiente passou por mudanças a fim de cumprir as tarefas, estas alterações serão justificadas e compreendidas com os resultados dos treinos e testes.
+% Como foi dito na seção \nameref{sec:objetivos}, o estudo não propõe um modelo imutável, ao invés disso, é esperado que o agente evolua em diversas frentes: seus sensores, os métodos de treino, os algoritmos, o ambiente envolvido se torne mais realista, entre outros. Como será visto no Capítulo \ref{cap:resultados}, o agente e ambiente passou por mudanças a fim de cumprir as tarefas, estas alterações serão justificadas e compreendidas com os resultados dos treinos e testes.
 
 \subsection{Treinamento e teste}
-Tendo o \nameref{modelo} e \nameref{algoritmos} detalhados acima é preciso explicar o treinamento e teste. O treinamento é executado via linha de comando, é necessário ativar o ambiente Python, gerar um executável do simulador pelo editor da unity e ter um arquivo de configuração do algoritmo. Tendo estes três itens é possível executar o comando do ml-agents e por o agente em treino. Após o treino finalizar é gerado um arquivo \textbf{.onnx} que é política final do agente, a rede neural com os coeficientes gerados pelo algoritmo após o treino, o seu "cérebro". Finalmente podemos por o agente em teste, de volta ao editor da Unity3D, basta carregar o cérebro no agente e executar o teste, o veículo agora se move como a política traduz os estados em ações, definida no arquivo .onnx, sem qualquer input do usuário, e o mesmo deve estar agindo de acordo com os resultados do treino, seja ele um sucesso ou não.
+O treinamento é executado via linha de comando, após sua conclusão é gerado um arquivo \textbf{.onnx} que é política final do agente, isto é, a rede neural com os coeficientes gerados pelo algoritmo durante o treino, o seu "cérebro". Finalmente podemos por o agente em teste, de volta ao editor da Unity3D, basta carregar o cérebro no agente e executar o teste, o veículo agora se move de acordo como a política traduz os estados em ações, definida no arquivo .onnx, sem qualquer input do usuário, com o agente agindo de acordo com os resultados do treino, seja ele um sucesso ou não. 
 
-Nos testes o agente deverá percorrer os mesmos trajetos, agora eles não serão aleatórios, ele percorrerá cada um três vezes. Como na lista de observações não inclui qualquer informação sobre qual trajeto ele está percorrendo no momento, o autor não viu necessidade de separar trajetos de treino e de teste, embora essa possibilidade posta em estudos futuros.
+Quando o treino é finalizado, suas estatísticas são exibidas pelo \textbf{tensorboard}, um pacote Python incluso no pacote ml-agents. Nelas é possível ter uma visualização do desempenho do agente durante o treino e sua curva de aprendizado. Quais são e o que significam estão na documentação do ML-agents em (\citeonline{juliani2020}). A estatística que iremos analisar aqui será o gráfico de \textbf{recompensa acumulada} (cumulative reward) que exibe a recompensa mediana por episódio, isso nos fará entender se o agente convergiu e com que velocidade. As demais estatísticas não tem muita utilidade para o nosso propósito, elas são mais úteis para saber como ajustar os hiperparâmetros em caso de um treino não sucedido.
 
-\subsubsection*{Estatísticas de treino}
-Quando o treino é finalizado é armazenado diversas estatísticas que são exibidas pelo \textbf{tensorboard}. Nelas é possível ter uma visualização do desempenho do agente durante o treino e sua curva de aprendizado. As que serão analisadas e discutidas na próxima parte estão descritas na lista abaixo. Assimi como a listagem dos hiper-parâmetros essas definições são traduções diretas da documentação do ML-agents (\citeonline{juliani2020}).
+Nos testes o agente deverá percorrer os mesmos trajetos nos quais treinou, como as observações do agente não inclui qualquer informação sobre qual trajeto ele está percorrendo no momento, o autor não viu necessidade de separar os trajetos em um conjuntos de treino e teste, porém isso pode ser explorado em estudos futuros. 
 
-\begin{description}
-   \item [Cumulative Reward:] A mediana da recompensa acumulada no episódio do agente. Deve aumentar ao longo de um treino bem sucedido (Esta estatística possui dois gráficos, um de linha e outro histrograma)
-   \item [Episode Length:] A duração mediana dos episódios (No caso deste projeto a duração deve diminuir ao longo do tempo, pois significa que o agente está realizando a tarefa mais eficientemente).
-   \item [Entropy:] a entropia da política, isto é, o quão aleatório as decisões do modelo são. Deve decair durante um treino bem sucedido. Se decair muito rapidamente deve-se aumentar o valor do hiperparâmetro \textbf{beta}.
-   \item [Extrinsic value estimate:] É a mediana do valor de todos os estados visitados pelo agente. Deve aumentar ao longo de um treinamento bem sucedido.
-\end{description}
+O primeiro desafio inclui dois treinos um em cada trajeto fácil diferente, por fácil entende-se uma rota que seja necessário fazer apenas uma curva. O segundo desafio inclui três treinos em rotas com duas ou mais curvas. Por fim o desafio geral, onde ele treinará em todos os dezessete trajetos. Após obtermos o "cérebro" gerado, este será colocado em teste percorrendo o mesmo trajeto o qual treinou (no caso dos desafios específicos), percorrendo-os dez vezes. No caso do desafio geral, 3 vezes em cada rota.
 
-Os demais gráficos são o \textbf{beta}, \textbf{epsilon} e \textbf{learning\_rate} eles são basicamente o valor destes hiper-parâmetros ao longo do treino, dependendo se os \textit{schedules} deles forem constante ou linear, é esperado uma linha constante no primeiro caso ou uma queda do valor deles até zero caso linear.
-
-\subsection{Estudo e análise}
-Para cada desafio será avaliado o treino e teste. A análise do treino envolverá(além dos gráficos mencionados acima) o tempo que demorou para convergir, a mediana e desvio padrão da recompena final. Para o teste, teremos duas formas diferentes de avaliar. Para os três primeiros desafios, o agente deverá percorrer o percurso que treinou dez vezes, será avaliado pela recompensa média e a quantidade de vezes que chegou ao destino. Para o desafio geral, deverá percorrer todas as rotas três vezes, será avaliado da mesma forma, por rota e o consolidado total. O primeiro desafio será específico em uma rota retilínea, sem necessidade de fazer curvas. O segundo exigirá que o agente faça uma curva, será treinado em dois trajetos diferentes. O último antes do geral, exigirá mais de uma curva, será treinado em três trajetos distintos. Por fim o geral será treinado em todos os trajetos, de diferentes tamanhos e complexidade. Fora a análise quantitativa, haverá também uma análise mais subjetiva da condução do veículo.
+O consolidado dos desafios está resumido na Tabela \ref{tabela-testes}, a segunda coluna "Rotas" se refere ao nome dado ao \textit{GameObject} da rota dentro do editor Unity.
 
 \begin{table}[htpb]
    \centering
-   \caption{Avaliação dos desafios. A coluna de rotas informa qual o \textit{GameObject} de rota que será treinado. A figura deles estará nos resultados.}
-   \begin{tabular}{|l|p{3cm}|r|}
+   \caption{Resumo dos desafios}
+   \label{tabela-testes}
+   \begin{tabular}{|l|p{4cm}|r|}
         \hline
-        \small{Desafio}                   & \small{Rota(s)}                            & \small{Qtde. testes}     \\ \hline
-         Específico: de trajeto fácil     & Path(2)                                    &      10                  \\ \hline
-         Específico: de trajeto mediano   & Path(8)\newline Path(0)                    &      10 em cada rota     \\ \hline
-         Específico: de trajeto difícil   & Path(3)\newline Path(5)\newline Path(6)    &      10 em cada rota     \\ \hline
-         Geral                            & Todos                                      &      30 (3 em cada)      \\ \hline
+        \small{Desafio}                      & \small{Rotas}                              & \small{Qtde. testes}     \\ \hline
+         Específico em trajetos fáceis       & Path(8)\newline Path(0)                    &      10 em cada rota     \\ \hline
+         Específico em trajetos difíceis     & Path(3)\newline Path(5)\newline Path(6)    &      10 em cada rota     \\ \hline
+         Geral                               & Todas as 17 rotas                          &      51 (3 em cada)      \\ \hline
    \end{tabular}
 \end{table}
 
-Aqui fica mais claro ao leitor o porquê o agente não é imutável, a cada desafio aumenta bastante a dificuldade da tarefa, exigindo uma calibragem mais sensível de hiper-parâmetros ou um sistema sensorial mais robusto. Neste capítulo foi ilustrado a versão mais básica do veículo e do ambiente mas no próximo, onde veremos sobre os resultados dos treinos e testes, será expostos as mudanças que precisaram ser feitas no modelo.
+\subsection{Análise}
+Para cada treino será testado três algoritmos: PPO, BC e GAIL. Então o primeiro é um treino/teste com apenas RL, enquanto os outros dois se tratam de Aprendizado por Imitação. A análise de desempenho avaliará os seguintes quesitos:
 
-No teste de um desafio, o agente deverá completar ao menos 90\% dos trajetos e média de recompensa acima de 0,95 cumprir os requisitos antes de tentar o próximo. 
+\begin{itemize}
+   \item Se convergiu ou não
+   \item Mediana final de recompensa por episódio
+   \item Porcentagem de conclusão da rota nos testes (cada rota no geral)
+   \item Média de recompensa na rota (caso treino em rota especifíca)
+   \item Média de recompensa por rota (caso geral)
+\end{itemize}
+
+
+Ao fim devemos ser capazes de responder as seguintes perguntas:
+\begin{itemize}
+   \item Foi possível ensinar um agente a percorrer trajetos?
+   \item Qual algoritmo mais eficiente nos testes? 
+   \item Qual algoritmo convergiu mais rápido nos treinos?
+\end{itemize}
+
+% \subsubsection*{Estatísticas de treino}
+% Quando o treino é finalizado é armazenado diversas estatísticas que são exibidas pelo \textbf{tensorboard}. Nelas é possível ter uma visualização do desempenho do agente durante o treino e sua curva de aprendizado. As que serão analisadas e discutidas na próxima parte estão descritas na lista abaixo. Assim como a listagem dos hiper-parâmetros essas definições são traduções diretas da documentação do ML-agents (\citeonline{juliani2020}).
+
+% \begin{description}
+%    \item [Cumulative Reward:] A mediana da recompensa acumulada no episódio do agente. Deve aumentar ao longo de um treino bem sucedido (Esta estatística possui dois gráficos, um de linha e outro histrograma)
+%    \item [Episode Length:] A duração mediana dos episódios (No caso deste projeto a duração deve diminuir ao longo do tempo, pois significa que o agente está realizando o trajeto mais rapidamente).
+%    \item [Entropy:] a entropia da política, isto é, o quão aleatório as decisões do modelo são. Deve decair durante um treino bem sucedido. Se decair muito rapidamente deve-se aumentar o valor do hiperparâmetro \textbf{beta}.
+% \end{description}
+
+% Os demais gráficos são o \textbf{beta}, \textbf{epsilon} e \textbf{learning\_rate} eles são basicamente o valor destes hiper-parâmetros ao longo do treino, dependendo se os \textit{schedules} deles forem constante ou linear, é esperado uma linha constante no primeiro caso ou uma queda do valor deles até zero caso linear.
+
+% \subsection{Estudo e análise}
+% Para cada desafio será avaliado o treino e teste. A análise do treino envolverá(além dos gráficos mencionados acima) o tempo que demorou para convergir, a mediana e desvio padrão da recompena final. Para o teste, teremos duas formas diferentes de avaliar. Para os três primeiros desafios, o agente deverá percorrer o percurso que treinou dez vezes, será avaliado pela recompensa média e a quantidade de vezes que chegou ao destino. Para o desafio geral, deverá percorrer todas as rotas três vezes, será avaliado da mesma forma, por rota e o consolidado total. O primeiro desafio será específico em uma rota retilínea, sem necessidade de fazer curvas. O segundo exigirá que o agente faça uma curva, será treinado em dois trajetos diferentes. O último antes do geral, exigirá mais de uma curva, será treinado em três trajetos distintos. Por fim o geral será treinado em todos os trajetos, de diferentes tamanhos e complexidade. Fora a análise quantitativa, haverá também uma análise mais subjetiva da condução do veículo.
+
+% \begin{table}[htpb]
+%    \centering
+%    \caption{Avaliação dos desafios. A coluna de rotas informa qual o \textit{GameObject} de rota que será treinado. A figura deles estará nos resultados.}
+%    \begin{tabular}{|l|p{3cm}|r|}
+%         \hline
+%         \small{Desafio}                   & \small{Rota(s)}                            & \small{Qtde. testes}     \\ \hline
+%          Específico: de trajeto fácil     & Path(2)                                    &      10                  \\ \hline
+%          Específico: de trajeto mediano   & Path(8)\newline Path(0)                    &      10 em cada rota     \\ \hline
+%          Específico: de trajeto difícil   & Path(3)\newline Path(5)\newline Path(6)    &      10 em cada rota     \\ \hline
+%          Geral                            & Todos                                      &      30 (3 em cada)      \\ \hline
+%    \end{tabular}
+% \end{table}
+
+% Aqui fica mais claro ao leitor o porquê o agente não é imutável, a cada desafio aumenta bastante a dificuldade da tarefa, exigindo uma calibragem mais sensível de hiperparâmetros ou um sistema sensorial mais robusto. Neste capítulo foi ilustrado a versão mais básica do veículo e do ambiente mas no próximo, onde veremos sobre os resultados dos treinos e testes, será expostos as mudanças que precisaram ser feitas no modelo.
+
+% No teste de um desafio, o agente deverá completar ao menos 90\% dos trajetos e média de recompensa acima de 0,95 cumprir os requisitos antes de tentar o próximo. 
 
 %%%%%
 % considerar completar esta parte, adicionar perguntas que devem ser respondidas na análise

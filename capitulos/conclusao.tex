@@ -1,8 +1,23 @@
 \chapter*{Conclusões e Trabalhos Futuros}\label{cap:conclusao}
 \addcontentsline{toc}{chapter}{Conclusão e Trabalhos Futuros}
 
-Ao longo deste projeto foi perceptível a dificuldade de se criar uma IA para veículo autônomo, apesar de a duração dos treinos terem sido surpreendemente rápidos (o desafio geral convergiu por volta de 90 minutos), vale lembrar que este simulador trata-se de um modelo excessivamente simples. Por outro lado, o agente foi bastante eficiente em realizar sua tarefa durante os testes após os treinos.
+Ao longo deste projeto foi perceptível a dificuldade de se criar uma IA para veículo autônomo, apesar de a duração dos treinos terem sido surpreendemente rápidos com o desafio geral com PPO e BC convergindo com 90 minutos aproximadamente, vale lembrar que este simulador trata-se de um modelo excessivamente simples. Por outro lado, o agente foi bastante eficiente em realizar sua tarefa durante os testes após os treinos. Este projeto conseguiu cumprir o objetivo de provar que é possível criar um ambiente de treinamento para um agente capaz de conduzir um automóvel.
 
 \section*{Trabalhos Futuros}
 
-Acerca de trabalhos futuros pode-se implementar melhorias no modelo, como este projeto é uma apresentação da plataforma existe muitos elementos de trânsito que foram deixados de lado como outros veículos, pedestres, semáforos, etc.
+Podemos dividir os estudos futuros em três frentes: melhorias no modelo e no agente e exploração de novos algoritmos.
+
+\subsection*{Melhorias no modelo e simulação}
+Algumas das melhorias mais óbvias que podem ser feitas é adição de outros elementos estáticos no cenário que estão ausentes nesta versão, por exemplo, semáforos, postes, obstruções na pista, prédios, etc. 
+
+Como foi dito, este modelo atualmente é muito simples, o desafio de se criar um agente completamente capaz de conduzir um veículo em ruas públicas é um caminho longo e que envolve muitos dilemas éticos. Felizmente, a Unity3D fornece uma gama de ferramentas que facilita a criação de cenários hipotéticos para testar o agente, como por exemplo treinar um cenário multi-agente, onde poderíamos ter dentro da mesma simulação mais de um agente circulando nas ruas, além de outros veículos não inteligentes, dirigidos por humanos. A simulação com pedestres talvez seja a mais importante de se simular, pois um dos maiores temores que se tem com a tecnologia de veículos autônomos é como a mesma reagiria em um acidente iminente, além do fato de que um condutor que sempre esteja atento e não cometa erros típicos humanos é um dos grandes objetivos da criação de carros autônomos.
+
+
+\subsection*{Melhorias no agente}
+Aqui foi testado um agente que seja capaz de percorrer trajetos extremamente curtos, o agente tinha um número máximo de 800 steps por rota para se chegar ao destino, o que dura em torno de 15 segundos. Este limite foi colocado para evitar que o veículo ficasse imóvel e o algoritmo preso em um mínimo local, porém, seria interessante aumentar o limite de steps junto com o tamanho de trajetos, trajetos longos que demorassem pelo menos alguns minutos poderia gerar um novo caso de estudos.
+
+Outro problema com o agente foi a falta de uso de processamento de imagem, ele dispõe apenas de sensores de distância e que consegue detectar alguns elementos como checkpoint e calçada. Com o uso de imagem o agente teria além de mais informação ele a disposição as mesmas observações que um humano possui enquanto dirige.
+
+
+\subsection*{Exploração de novos algoritmos}
+Como foi visto nos resultados, GAIL teve treinos instáveis não convergindo algumas vezes além de ter desempenhado pior nos testes, por outro lado, isso não descarta totalmente o algoritmo, estes problemas podem ter sido causado por sensibilidade nos hiperparâmetros e uma exploração maior destes talvez resulte em um treino mais estável e testes mais bem sucedidos. Como foi mencionado na fundamentação teórica, o pacote ml-agents da Unity possui SAC como um dos algoritmos disponíveis, sendo que este foi criado justamente com o objetivo de ser menos sensível aos hiperparâmetros comparado a outros métodos, uma combinação SAC+GAIL pode gerar resultados melhores dos que foram vistos aqui.
