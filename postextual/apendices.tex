@@ -10,11 +10,11 @@
 \chapter{Sobre os testes feitos e como reproduzi-los}
 % ----------------------------------------------------------
 
-Os testes dos quais a seção de resultados se refere estão disponíveis em vídeo nesta \href{https://drive.google.com/drive/folders/1WcdHMeFQLfDubvYvLJnqbobnysT5pJoq?usp=sharing}{URL do Google Drive}.
+Os testes dos quais a seção de resultados se refere estão disponíveis em vídeo nesta URL do Google Drive: \href{https://drive.google.com/drive/folders/1WcdHMeFQLfDubvYvLJnqbobnysT5pJoq?usp=sharing}{https://drive.google.com/drive/folders/1WcdHMeFQLfDubvYvLJ\\nqbobnysT5pJoq?usp=sharing}.
 
 É possível baixar e reproduzir os testes feitos neste projeto, o desempenho pode não ser exatamente igual aos dos vídeos acima, porém é esperado um resultado semelhante.
 
-Como reproduzir os testes está descrito na página inicial do \href{https://github.com/antunesvitor/SimuladorDeConducao}{repositório}, porém a fim de deixar este artigo completo com toda a informação necessária as instruções serão disponíveis aqui também.
+Como reproduzir os testes está descrito na página do repositório oficial do projeto (\href{https://github.com/antunesvitor/SimuladorDeConducao}{https://github.com/antunesvitor/SimuladorDeConducao}), porém a fim de deixar este artigo completo com toda a informação necessária as instruções serão disponíveis aqui também.
 
 \section*{Requisitos}
 
@@ -39,31 +39,31 @@ Aqui é explicado como reproduzir os testes que foram feitos no projeto. Eles ob
  \begin{enumerate}
     \item Primeiro baixe e instale o Unity Hub.
     \begin{itemize}
-        \item Windows: baixe e instale pelo \href{https://unity.com/download}{site oficial da Unity}.
-        \item Arch Linux: instale \href{https://aur.archlinux.org/packages/unityhub}{o pacote na AUR}. Para isso terá que usar um gerenciador de pacotes da AUR como o \href{https://github.com/Jguer/yay}{yay} ou \href{https://github.com/morganamilo/paru}{o paru}.
-        \item Para as distribuições Linux oficialmente suportadas siga as \href{https://docs.unity3d.com/2020.1/Documentation/Manual/GettingStartedInstallingHub.html}{instruções na documentação}.
+        \item Windows: baixe e instale pelo site oficial da Unity (\href{https://unity.com/download}{https://unity.com/download}).
+        \item Arch Linux: instale o pacote na AUR (\href{https://aur.archlinux.org/packages/unityhub}{https://aur.archlinux.org/packages/unity\\hub}). Para isso terá que usar um gerenciador de pacotes da AUR como o yay (\href{https://github.com/Jguer/yay}{https://github.com/Jguer/yay}) ou o paru (\href{https://github.com/morganamilo/paru}{https://github.com/morganamilo/\\paru}).
+        \item Para as distribuições Linux oficialmente suportadas siga as instruções na documentação (\href{https://docs.unity3d.com/2020.1/Documentation/Manual/GettingStartedInstallingHub.html}{https://docs.unity3d.com/2020.1/Documentation/Manual/GettingS\\tartedInstallingHub.html}.
     \end{itemize}
-    \item Após isso clone ou baixe \href{https://github.com/antunesvitor/SimuladorDeConducao}{o repositório do projeto}.
-    \item Abra o Unity Hub, vá em Open e navegue até o diretório onde você baixou o projeto e clique abrir. É possível que apareça um aviso de que a versão do editor não está instalada no seu computador, para isso existe duas opções:
+    \item Após isso clone ou baixe o repositório do projeto (\href{https://github.com/antunesvitor/SimuladorDeConducao}{https://github.com/antunesvitor/Si\\muladorDeConducao}).
+    \item Abra o Unity Hub, vá em Open e navegue até o diretório onde você baixou o projeto e clique abrir. É possível que apareça um aviso de que a versão do editor não está instalada no seu computador, para isso existem duas opções:
     \begin{itemize}
-        \item (Recomendado) Baixar a versão exata do projeto: Vá na \href{https://unity.com/releases/editor/archive}{página de arquivo da editores da Unity} clique na aba "Unity 2022.X" e clique no botão  "Unity Hub" na versão 2022.3.7;
-        \item (Não recomendado) Alterar a versão do projeto: quando o aviso aparecer clique em "Choose another editor version" e então em "Install Editor Version" ele te apresentará as versões LTS disponíveis para download;
+        \item (Recomendado) Baixar a versão exata do projeto: Vá na página de arquivo da editores da Unity (\href{https://unity.com/releases/editor/archive}{https://unity.com/releases/editor/archive}) clique na aba "Unity 2022.X"{} e clique no botão  "Unity Hub"{} na versão 2022.3.7;
+        \item (Não recomendado) Alterar a versão do projeto: quando o aviso aparecer clique em "Choose another editor version"{} e então em "Install Editor Version"{} ele te apresentará as versões LTS disponíveis para download;
     \end{itemize}
     \item Após isso basta clicar duas vezes para abrir o projeto.
  \end{enumerate}
 
 \subsection*{Testando os modelos}
-Para testar os modelos apropriadamente é preciso testar um por vez e ajustar o projeto de acordo, alguns dos "cérebros" (arquivos .onnx na pasta Brains são a política definida pelo treino, a rede neural) são de trajetos específicos.
+Para testar os modelos apropriadamente é preciso testar um por vez e ajustar o projeto de acordo, alguns dos "cérebros"{} (arquivos .onnx na pasta Brains são a política definida pelo treino, a rede neural) são de trajetos específicos.
 
 \begin{enumerate}
     \item Selecione o objeto Car na hierarquia do projeto.
-    \item Arraste o "cérebro" que deseja treinar para o campo \textit{Model} no inspetor à esquerda do editor.
+    \item Arraste o "cérebro"{} que deseja treinar para o campo \textit{Model} no inspetor à esquerda do editor.
     \item Desabilite todos os paths que não for usar (consultar \nameref{nomenclatura}).
     \item Agora basta apertar o botão \textit{play} no topo ao centro e o veículo já estará sendo conduzido pelo cérebro. (Obs. garanta que os campos \textit{Behaviour Type} e \textit{Inference Device} estejam ambos em \textit{Default}  ou  \textit{Inference Only} e \textit{CPU} respectivamente, caso contrário não funcionará).
 \end{enumerate}
 
 \subsection*{Nomenclatura dos cérebros}\label{nomenclatura}
-Os "cérebros" estão na pasta Assets/Brains e seguem o seguinte padrão de nome:
+Os "cérebros"{} estão na pasta Assets/Brains e seguem o seguinte padrão de nome:
 
 CarSim<algoritmo><versão>\_<path>-<id>
 
@@ -71,7 +71,7 @@ CarSim<algoritmo><versão>\_<path>-<id>
 
 <versão> é um número que identifica a versão do veículo, durante o projeto diversas versões foram criadas, atualmente só há uma versão dele (3.1), porém esta a versão foi posta para deixar claro que possa haver mais de um agente em versões diferentes no mesmo ambiente.
 
-<path> a rota a qual aquele cérebro treinou, se habilitar uma rota diferente do cérebro ele provavelmente não irá desempenhar bem a tarefa. O nome é igual aos GameObjects do localizados abaixo do GameObject SpawnPointManager. O "GERAL" significa que ele treinou em todas as rotas.
+<path> a rota a qual aquele cérebro treinou, se habilitar uma rota diferente do cérebro ele provavelmente não irá desempenhar bem a tarefa. O nome é igual aos GameObjects do localizados abaixo do GameObject SpawnPointManager. O "GERAL"{} significa que ele treinou em todas as rotas.
 
 <id> opcional, um identificador a mais para diferenciar um cérebro de outro caso os valores acima sejam iguais.
 

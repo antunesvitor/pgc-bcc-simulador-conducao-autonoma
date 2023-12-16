@@ -6,35 +6,42 @@
 \chapter*[Introdução]{Introdução}
 \addcontentsline{toc}{chapter}{Introdução}
 
-No passado eram veículos eram, em grande parte, máquinas mecânicas, com poucos recursos eletrônicos. Hoje em dia, diversos avanços foram feitos nos carros modernos, e estes já estão equipados com variadas tecnologias assistentes como controle de tração, freios ABS e de emergência, piloto automático, entre outros recursos que dependem de sensores e que tomam decisões que controlam parcialmente o veículo, visando segurança e conforto ao condutor. 
+No passado eram veículos eram, em grande parte, máquinas mecânicas, com poucos recursos eletrônicos. Hoje em dia, diversos avanços foram feitos nos carros modernos, e estes já estão equipados com variadas tecnologias assistentes como controle de tração, freios ABS e de emergência, piloto automático, entre outros recursos que dependem de sensores e tomam decisões que controlam parcialmente o veículo, visando segurança e conforto ao condutor. 
 
-Veículos que possuem as assistências mencionadas acima comumente são chamados de "autônomos", porém neste artigo trataremos por "carro autônomo" um veículo que seja capaz de conduzir-se sem depender de um humano. De acordo com o padrão SAE J3016 a autonomia de veicular é dividida em níveis que vão do zero ao cinco, os recursos citados são no máximo nível 2, um veículo para ser "autônomo" seria de nível 3 ou maior (\citeonline{SAE2014}), porém para atingir este grau de autonomia é necessário mais do que sensores e controladores que dão instruções diretas ao carro.
+Veículos que possuem as assistências mencionadas acima comumente são chamados "autônomos", porém neste artigo trataremos por "carro autônomo" um veículo capaz de conduzir-se sem depender de um humano. Conforme o padrão SAE J3016, a autonomia veicular é dividida em níveis que vão do zero a cinco, os recursos citados são no máximo nível 2, um veículo para ser "autônomo"{} seria de nível 3 ou maior (\citeonline{SAE2014}), porém para atingir este grau de autonomia, é necessário mais do que sensores e controladores que dão instruções diretas ao carro.
 
-Nas duas últimas décadas houve um aumento na presença de tecnologias como Inteligência Artificial e \textbf{Aprendizado de Máquina} no cotidiano das pessoas. Corretores ortográficos, reconhecimento facial, algoritmos de recomendação de leitura, música ou compra são alguns exemplos de diversos outros que até então estavam apenas disponíveis em lugares específicos com laboratórios de pesquisa, mas agora já são amplamente aplicadas. 
+Nas duas últimas décadas houve um aumento na presença de tecnologias como Inteligência Artificial e \textbf{Aprendizado de Máquina} no cotidiano das pessoas. Corretores ortográficos, reconhecimento facial, algoritmos de recomendação de leitura, música ou compra são alguns exemplos de diversos outros que até então estavam apenas disponíveis em lugares específicos com laboratórios de pesquisa, mas agora são amplamente aplicadas. 
 
-Existem três paradigmas de aprendizado de máquina: \textbf{aprendizado supervisionado}, \textbf{não supervisionado} e \textbf{aprendizado por reforço}. Este último aborda aprendizado que envolvam exercer uma atividade, nele, o \textbf{agente} durante seu treino, aprimora uma tarefa após várias tentativas e erro onde é premiado quando age corretamente e penalizado caso contrário. Este artigo introduzirá os dois primeiros paradigmas e discorrerá mais detalhadamente sobre o \textbf{AR}. Embora o \textbf{AS} também é necessário para a tarefa, ele é mais usado em reconhecimento de elementos no ambiente, algo que está fora do escopo deste projeto.
+Existem três paradigmas de aprendizado de máquina: \textbf{supervisionado (AS)}, \textbf{não supervisionado} e \textbf{por reforço(AR)}. Este último aborda aprendizado que envolvam exercer uma atividade, nele, o \textbf{agente} durante seu treino, aprimora uma tarefa após várias tentativas e erro onde é premiado quando age corretamente e penalizado caso contrário. Este artigo introduzirá os dois primeiros paradigmas e discorrerá mais detalhadamente sobre o \textbf{AR}. Embora o \textbf{AS} também seja necessário para a tarefa, ele é mais usado em reconhecimento de elementos no ambiente, algo que está fora do escopo deste projeto.
 
-Quando tenta-se criar uma automato que exerça uma atividade complexa como condução de um veículo, a abordagem clássica que usa algoritmos com condicionais e instruções direta é insuficiente para tal, isto deve-se ao fato de que é inviável criar manualmente uma tabela de comandos dado certas condições, a lista tenderia ao infinito. Utilizando de um paradigma de AM como \textbf{aprendizado por reforço} se faz necessário pois o automato irá, após sucessivas tentativas, dominar a técnica de conduzir um veículo.
+Quando tenta-se criar um autômato que exerça uma atividade complexa como condução de um veículo, a abordagem clássica que usa algoritmos com condicionais e instruções diretas é insuficiente para tal, isto deve-se ao fato de que é inviável criar manualmente uma tabela de comandos dado certas condições, o tamanho da lista tenderia ao infinito. Utilizando de um paradigma de AM como \textbf{aprendizado por reforço} se faz necessário, pois o autômato dominará a técnica de conduzir um veículo após sucessivas tentativas.
 
-Este artigo propõe-se a apresentar um estudo do que é necessário para criar um agente condutor de um veículo dentro de um simulador que saiba percorrer um dado trajeto em um ambiente urbano. Será analisado como modelar um simulador, como quais sensores o veículo deve possuir, quais observações deve fazer do ambiente para evitar colisões, entre outros.
+Este projeto se propõe a criar um simulador que sirva de estudos para o aprimoramento de um agente condutor de carro autônomo. Isso compreende usar um modelo 3D de uma área urbana e de um carro e então realizar um estudo para desenvolver um condutor do veículo utilizando-se de AR. 
+
+% Este artigo propõe-se a apresentar um estudo do que é necessário para criar um agente condutor de um veículo dentro de um simulador que saiba percorrer um dado trajeto em um ambiente urbano. Será analisado como modelar um simulador, como quais sensores o veículo deve possuir, quais observações deve fazer do ambiente para evitar colisões, entre outros.
 
 
+%TODO: reescerver a justificativa, usar aquela de que o simulador serve para estudos iniciais antes de se fazer testes reais.
 \section*{Justificativa}\label{sec:justificativa}
 \addcontentsline{toc}{section}{Justificativa}
-Uma das maiores causas de morte no Brasil é por conta de acidentes de trânsito, chegando a um total de 43 mil óbitos em um único ano (CARVALHO, 2016), é sabido também que grande causa dessas mortes é por falha humana por parte do condutor. Tendo em vista o avanço tecnológico na área de Inteligência Artificial vemos que vem se tornando viável o desenvolvimento de um modelo que seja capaz de conduzir um veículo automotivo em ambientes urbanos, dessa forma poderíamos ter em vias públicas condutores que não se distraiam e não cometam infrações de trânsitos.
+Uma das maiores causas de morte no Brasil é por conta de acidentes de trânsito, chegando a um total de 43 mil óbitos em um único ano (CARVALHO, 2016). É sabido também que grande causa dessas mortes é por falha humana por parte do condutor. Tendo em vista o avanço tecnológico na área de Inteligência Artificial, vemos que vem se tornando viável o desenvolvimento de um modelo que consiga conduzir um veículo automotivo em ambientes urbanos, dessa forma poderíamos ter em vias públicas condutores que não se distraiam e não cometam infrações de trânsitos.
 
 
 \section*{Objetivos}\label{sec:objetivos}
 \addcontentsline{toc}{section}{Objetivos}
 \subsection*{Objetivos Gerais}
-O propósito deste projeto é entregar um ambiente simulado que sirva de treinamento para veículos autônomos, que possa ser útil não somente para os estudos e análises que serão realizados neste mas também em futuros trabalhos que envolva treinar agentes em um cenário urbano. O objetivo aqui é criar o ambiente, o veículo, sua mecânica de direção e um agente que consiga conduzir o veículo. No fim, o agente deverá ser capaz de conduzir o veículo em qualquer rota traçada até o destino indicado.
+% O propósito deste projeto é entregar um ambiente simulado que sirva de  treinamento para veículos autônomos, que possa ser útil não somente para os estudos e análises que serão realizados neste mas também em futuros trabalhos que envolvam treinar agentes em um cenário urbano. O objetivo aqui é criar o ambiente, o veículo, sua mecânica de direção e um agente que consiga conduzir o veículo. Ao fim, o agente deverá conseguir conduzir o veículo em qualquer rota traçada até o destino indicado.
+Neste projeto, será feito um estudo comparativo dos algoritmos de aprendizado por reforço e imitação. Com isso, o objetivo é obter uma perspectiva inicial dos algoritmos, além de validar se o simulador é adequado para estudos do ramo.
 
+% Tem que atualizar estas perguntas
 \subsection*{Objetivos específicos}
-Este trabalho pretende servir de base para a criação desta plataforma. Na seção \nameref{metodologia}, será explicado que o agente deverá superar cada desafio, com uma dificuldade crescente após o outro. Ao fim será respondido as seguintes perguntas:
+% Este trabalho pretende servir de base para a criação desta plataforma. Na seção \nameref{metodologia}, será explicado que o agente deverá superar cada desafio, com uma dificuldade crescente após o outro. Ao fim, serão respondidos as seguintes perguntas:
+Os algoritmos que o projeto visa comparar são: \textbf{Otimização de Política Proximal (PPO)}, \textbf{Clonagem Comportamental (BC)} e \textbf{Aprendizagem por Imitação Adversária Generativa (GAIL)}. Eles serão usados para treinar um agente de modo a faze-lo percorrer trajetos pré-definidos. O desafio exigirá que ele faça curvas, evite se chocar com obstáculos como subir em uma calçada ou colidir com uma parede. O agente que conseguir chegar ao destino sem cometer infrações em excesso é dito "eficiente" (critério do autor). Com isso o projeto visa responder as seguintes perguntas:
 
 \begin{itemize}
-    \item Quais são as observações que um agente precisa fazer do ambiente para realizar sua tarefa?
-    \item Qual o melhor método de se treinar um agente para carro autônomo neste simulador? Aprendizado por Reforço ou por Imitação?
+    \item Quais dos três algoritmos conseguiu gerar um agente que seja eficiente?
+    \item Qual deles gerou o agente \textit{mais} eficiente?
+    \item Qual deles gerou este agente mais rápido?
 \end{itemize}
 
 % \section*{Etapas do estudo}\label{sec:etapas}
