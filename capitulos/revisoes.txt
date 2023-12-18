@@ -1,0 +1,139 @@
+== Minhas considerações ==
+
+    Há muitos problemas de texto (vírgulas, conjugação singular/plural, espaços). O texto merece uma revisão ortográfica atenta
+    Há também frases muito longas que poderiam ser divididas em partes menores
+    Em vários pontos do texto (por ex, páginas 1, 5, 9, 17), há a palavra "artigo" para se referir ao texto. Este texto não é um artigo (ou é?)
+    As figuras (todas ou quase todas) não são citadas no texto, o que dificulta acompanhá-las
+    Página 8: "Não existe uma definição única...". Qual definição você usou?
+    Página 18: por que a seção "Utilização de Aprendizado por Reforço e Imitação em jogos" é tão curta?
+    Página 21: "O outro pacote seria o pacote Python". Pacote Python mesmo?
+    Página 24: veículo possui 8 sensores - condiz com os sensores de um carro no mundo real?
+    Parte dos sensores servem para detectar checkpoints, mas este últimos são paredes imaginárias. Como isso se correlaciona ao mundo real?
+    Página 31: comente sobre a questão de conjunto de treino e teste. Sua solução pode estar enviesada?
+    Seção dos resultados têm muitos dados mas pouca discussão. Quais são as principais conclusões que esses dados permitem obter?
+    Apêndice: poderia ter URLs por extenso
+    Página 47: por que o desempenho pode não ser exatamente igual?
+
+== Correções pontuais ==
+Resumo e Abstract:
+
+    Veículos autônomos é um => Veículos autônomos são um
+    já são uma realidade muitos desafios => já são uma realidade, muitos desafios
+    Neste projeto pretende fazer estudos => Neste projeto, pretende fazer estudos
+    Autonomous vehicles is one => Autonomous vehicles are one
+    tests on road it’s already a thing => tests on road are already a thing
+    a simulation using => a simulator using
+    which can ber used => which can be used
+    In this project we intend => In this project, we intend
+    the just developed => the newly developed
+
+ 
+Introdução
+
+    pg 1: 
+        No passado eram veículos eram => No passado, veículos eram
+        autonomia de veicular => autonomia veicular
+        De acordo com o padrão SAE J3016 a => De acordo com o padrão SAE J3016, a
+        "autônomo"seria => "autônomo" seria
+        porém para atingir este grau de autonomia é => porém, para atingir este grau de autonomia, é
+         o agente durante seu treino =>  o agente, durante seu treino
+        Não definiu AR e AS
+        Embora o AS também é necessário => Embora o AS também seja necessário
+        automato => autômato
+        dado certas condições, a lista => dado certas condições, o tamanho da lista
+        último parágrafo está difícil de acompanhar
+    pg 2:
+        , é sabido => . É sabido
+        Inteligência Artificial vemos que => Inteligência Artificial, vemos que
+         dessa forma ... infrações de trânsito: frase bem confusa
+        futuros trabalhos que envolva treinar => futuros trabalhos que envolvam treinar
+        Ao fim será respondido as seguintes perguntas: => Ao fim, serão respondidas as seguintes perguntas:
+        Objetivo geral parece muito abrangente
+
+Fundamentação teórica
+
+    pg 5:
+        Neste capítulo será introduzido => Neste capítulo, serão introduzidos
+        autonomia de veículos como => autonomia de veículos, como
+        Atualmente veículos com autonomia => Atualmente, veículos com autonomia
+        zero a dois, já =>  zero a dois já
+        cada um deles usam => cada um deles usa
+        Último parágrafo (que segue para página 6) é muito longo e quase sem pontuação, fica difícil acompanhar
+    pg 6:
+        Estes programas inclui =>  Estes programas incluem
+        facilitariam o trabalho, não seria necessário => facilitariam o trabalho. Não seria necessário
+        Com isso permite que => Isso permite que
+    pg 7:
+        Primeiro parágrafo está muito longo e sem pontuação adequada. É difícil acompanhar
+        "câmera"com => "câmera" com
+    pg 8:
+        Último parágrafo antes de 1.3 parece desnecessário
+        "está interessada": IA está interessada em algo?
+        racionalmente, pode ser entendido => racionalmente pode ser entendida
+    pg 11: RL não está definida no texto nem na lista de abreviaturas e siglas
+    pg 12: de uma funcão v => de uma função v
+    pg 13: e com a política otimizada reavalia => e como a política otimizada reavalia
+    pg 14:
+        funcões valores => funções valores
+        disturbio => distúrbio
+        por no início do treino suas ações serem randômicas existindo uma enorme...: bem confuso
+    pg 15: improvável,levando => improvável, levando
+
+Estado da arte
+
+    Neste capítulo será discutido e analisados => Neste capítulo, serão discutidos e analisados
+    trabalhos que envolve => trabalhos que envolvem
+    A outra seção, porém será visto projetos => Na outra seção, porém, serão vistos projetos
+    trajetos urbanos que contenha pedestres => trajetos urbanos que contenham pedestres
+    etc(Wymann et al. (2013)) => etc (Wymann et al. (2013))
+
+Ferramentas
+
+    Para criar o projeto foi usado a Unity3D => Para criar, o projeto foi usada a Unity3D
+    Untiy3D => Unity3D
+    O outro pacote seria o pacote Python, => O outro pacote foi o pacote Python,
+    Para a criação do ambiente foi utilizado dois assets => Para a criação do ambiente, foram utilizados dois assets
+    modelos de carros que servirá => modelos de carros que servirão
+
+Modelo proposto
+
+    pg 23:
+        depois é explicado => depois será explicado
+        dos algoritmos por fim => dos algoritmos; por fim
+        "modelo"entende-se =>  "modelo" entende-se
+        A simulação envolve em treinar => A simulação envolve treinar
+        simplicidade o agente => simplicidade, o agente
+        Porém outros elementos estáticos comuns de uma cidade como calçadas, postes, árvores, prédios, etc => cadê o verbo?
+        cada uma delas possuem => cada um deles possui
+    pg 24:
+        Para o aprendizado o veículo => Para o aprendizado, o veículo
+    pg 25:
+        Além dos sensores, foi adicionado a velocidade do veículo a lista => Além dos sensores, foi adicionada a velocidade do veículo à lista
+        o agente não chegar a tempo, o agente tombar o veículo => o agente não chega a tempo, o agente tomba o veículo
+    pg 27:
+        Para o controle do veículo foi  => Para o controle do veículo, foi
+        neste código ele pega o => este código pega o
+        Para o projeto foi feito => Para o projeto, foi feita
+    pg 28: passos(observações => passos (observações
+    pg 29:
+        Aumenta-lo => Aumentá-lo
+        Valores baixos corresponde a => Valores baixos correspondem à  
+    pg 30:
+        aleatórias,o  => aleatórias, o
+        deve ser na casa => deve estar na casa
+    pg 31:
+        observações do agente não inclui => observações do agente não incluem
+        "Rotas"se => "Rotas" se
+
+Resultados e Discussão
+
+    pg 36: baixodos => baixo dos
+
+Conclusões e Trabalhos Futuros
+
+    ser feitas é adição => ser feitas são a adição
+
+Apêndice
+
+    pg 48: para isso existe duas opções => para isso existem duas opções
+

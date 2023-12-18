@@ -1,34 +1,5 @@
 \chapter{Resultados e Discussão}\label{cap:resultados}
 
-% \section{Desafio em trajeto especifíco fácil}
-
-% O primeiro e único treino foi executado como agente percorrendo somente um percurso em linha reta, conforme a imagem abaixo.
-
-% \begin{figure}[h]
-%     \centering
-%     \includegraphics[scale=0.25]{figs/rotas/path_14.png}
-%      \caption{O percurso executado no primeiro treino. A cápsula vermelha no canto inferior direito indica a posição inicial do veículo e a na parte superior esquerdo indica o destino.}
-%      \label{fig:rota-1}
-% \end{figure}
- 
-% \begin{figure}[h]
-%     \centering
-%     \includegraphics[scale=0.35]{figs/treinos/treino-1/política.png}
-%      \caption{Estatísticas referentes a política. O primeiro gráfico é a entropia, decaindo como é esperado. O terceiro gráfico é o Extrinsic Value estimate, sobe e estabiliza, conforme esperado}
-%      \label{fig:treino-1-politica}
-% \end{figure}
-
-% \begin{figure}[h]
-%     \centering
-%     \includegraphics[scale=0.35]{figs/treinos/treino-1/ambiente.png}
-%      \caption{Estatísticas do ambiente. O primeiro gráfico é o acumulado de recompensa, o segundo é um histograma das distribuições de recompens. O terceiro é a duração do episódio.}
-%      \label{fig:treino-1-ambiente}
-% \end{figure}
-
-% \subsection*{Análise}
-% O treino foi bem sucedido, o agente soube conduzir bem o veículo. Vendo o gráfico 1 da figura 9, pode-se notar o crescimento exponencial da recompensa e então sua estabilização quando atinge o máximo da recompensa que é possível receber. Também percebe-se que na mesma velocidade mas desta vez em sentido descendente a duração média do episódio, rapidamente cai pois o agente já dominou o trajeto. Isso é o suficiente para este trajeto, podemos treinar o agente em um novo desafio especifíco mas com um trajeto mais complexo.
-
-
 \section{Desafio em trajeto específico dificuldade fácil}
 Aqui o treino foi feito em dois trajetos (identificados por Path(8) e Path(0) no projeto), ambos exigem que o agente faça uma conversão do veículo.
 
@@ -50,7 +21,7 @@ Aqui o treino foi feito em dois trajetos (identificados por Path(8) e Path(0) no
     \caption{Recompensa cumulativa mediana por steps durante o treino do agente no Path(8).}
 \end{figure}
 
-O treinamento não encontrou problemas para convergir neste desafio em qualquer dos três algoritmos. PPO foi o que obteve a melhor mediana final no \textit{Path(0)} mesmo dispondo de menos \textit{steps} para treinar. Embora tenham convergido, GAIL e BC se mostrando instáveis, o primeiro demorou muito para mostrar alguma melhora no agente enquanto o último apresentou uma anomalia no Path(0) após 350 mil \textit{steps} voltando a se estabilizar após 450 mil passos. Quanto ao \textit{Path(8)}, o treino utilizando-se de BC convergiu mais rápido e também obteve a maior mediana, enquanto que GAIL foi o mais instável, não convergindo.
+O treinamento não encontrou problemas para convergir neste desafio em qualquer dos três algoritmos. PPO foi o que obteve a melhor mediana final no \textit{Path(0)} mesmo dispondo de menos \textit{steps} para treinar. Embora tenham convergido, GAIL e BC se mostraram instáveis, o primeiro demorou muito para mostrar alguma melhora no agente enquanto o último apresentou uma anomalia no Path(0) após 350 mil \textit{steps} voltando a se estabilizar após 450 mil passos. Quanto ao \textit{Path(8)}, o treino utilizando-se de BC convergiu mais rápido e também obteve a maior mediana, enquanto que GAIL foi o mais instável, não convergindo.
 
 \begin{table}[htpb]
     \centering
@@ -72,7 +43,7 @@ O treinamento não encontrou problemas para convergir neste desafio em qualquer 
 Nos testes, com exceção do algoritmo GAIL no \textit{Path(8)}, foram quase sem qualquer falha. O  cérebro treinado com o algoritmo BC subiu na calçada uma vez em cada teste, mas a punição por uma ocorrência não é suficiente pra afetar a média.
 
 \section{Desafio em trajeto específico difícil}
-Para este desafio foi testado em três rotas diferentes: \textit{Path(3), Path(5) e Path(6)}. A primeira é a mais complexa contém três curvas alternadas, enquanto \textit{Path(5)} requer que o carro faça duas conversões a direita e o último trajeto possui duas curvas alternadas. 
+Para este desafio foi testado em três rotas diferentes: \textit{Path(3), Path(5) e Path(6)}. A primeira é a mais complexa contém três curvas alternadas, enquanto \textit{Path(5)} requer que o carro faça duas conversões à direita e o último trajeto possui duas curvas alternadas. 
 
 Neste desafio ficou claro que o agente teve dificuldade em convergir nos algoritmos BC e GAIL no Path(3), com BC tendo um crescimento constante seguido de uma queda gradual de desempenho até atingir o patamar mais baixo dos três, enquanto GAIL ficou estagnado em um mínimo local assim como fez no Path(5). No Path(6) todos convergiram, com PPO com uma mediana consideravelmente maior.
 
@@ -119,7 +90,7 @@ Neste desafio ficou claro que o agente teve dificuldade em convergir nos algorit
     \end{tabular}
 \end{table}
 
-Todos desempenharam de acordo com o treino durante os testes com exceção do BC no Path(6) concluiu apenas metade das rotas. Durante o teste do Path(6) foi observado uma diferença interessante entre o agente treinado com PPO que usa apenas RL e o GAIL que utiliza-se de IL: o primeiro tendia a abusar de uma falha de detecção de colisão do veículo com a calçada poupando assim um pouco de tempo (e de punição por step) em vez de seguir na via. Isso ocorre porque da forma que o agente passa sobre a calçada o modelo raramente detecta uma colisão ali, com o agente treinado em GAIL isto não ocorre, já que o mesmo tenta imitar o comportamento na demonstração feita por um humano que seguiu na via normalmente.
+Todos desempenharam de acordo com o treino durante os testes com exceção do BC no Path(6) concluiu apenas metade das rotas. Durante o teste do Path(6) foi observado uma diferença interessante entre o agente treinado com PPO que usa apenas RL e o GAIL que utiliza-se de IL: o primeiro tendia a explorar de uma falha de detecção de colisão do veículo com a calçada poupando assim um pouco de tempo (e de punição por step) em vez de seguir na via. Isso ocorre porque da forma que o agente passa sobre a calçada o modelo raramente detecta uma colisão ali, com o agente treinado em GAIL isto não ocorre, já que o mesmo tenta imitar o comportamento na demonstração feita por um humano que seguiu na via normalmente.
 
 \section{Desafio em todos os trajetos}
 Neste desafio houve uma discrepância muito grande entre GAIL e os outros dois, este último não teve um treino estável mesmo após diversos ajustes nos hiperparâmetros e isto refletiu nos testes onde obteve uma recompensa média negativa. Nas tabelas \ref{resultado-tabela-geral-ppo} e \ref{resultado-tabela-geral-bc} pode-se ver que ambos tiveram mais dificuldades no \textit{Path(10)} que possui duas curvas pra esquerda. Interessante ressaltar que BC nestes testes conseguiu concluir o Path(3) em todas as tentativas em contraste com o desafio anterior onde falhou em todas as dez tentativas, o que nos leva a crer que treinar em outros trajetos ajude o agente a cumprir um trajeto específico em vez de treinar somente em um único trajeto, pelo menos utilizando-se de Aprendizado por Imitação.

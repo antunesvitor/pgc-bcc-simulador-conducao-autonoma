@@ -6,7 +6,7 @@ Este capítulo abordará o sistema de treinamento proposto. Primeiramente será 
 Aqui é descrito sobre o modelo do projeto. Por "modelo"{} entende-se o conjunto ambiente-agente-recompensas. Cada um deles é detalhado nas subseções abaixo. Dentre os módulos que compõe um veículo autônomo o foco deste projeto será em desenvolver o componente de controle de deslocamento que é responsável por fazer carro percorrer um trajeto. No mundo real as rotas seriam geradas por outro componente, porém isto está além do escopo deste projeto, portanto elas serão definidas pelo autor. Importante ressaltar que o conjunto de rotas deve ser composto por uma variedade de trajetos que exijam uma diversidade de manobras a serem aprendidas pelo agente.
 
 \subsection{O ambiente}
-A simulação envolve treinar o veículo para percorrer trajetos em ambiente urbano, a princípio, por uma questão de simplicidade, o agente não terá de lidar com declives ou aclives, semáforos, outros veículos ou pedestres. Portanto, o foco poderá se manter no estudo de fazer um agente percorrer as rotas. Às bordas do cenário há muros que limitam o alcance do veículo, foi concluído pelo autor que o tamanho atual é suficiente para os treinos iniciais, em estudos futuros pode ser considerado a expansão do cenário. O agente recebe uma punição ao se chocar com a calçada ou com os muros da borda da cidade.
+A simulação envolve treinar o veículo para percorrer trajetos em ambiente urbano, a princípio, por uma questão de simplicidade, o agente não terá de lidar com declives ou aclives, semáforos, outros veículos ou pedestres. Portanto, o foco poderá se manter no estudo de fazer um agente percorrer as rotas. Às bordas do cenário há muros que limitam o alcance do veículo. Como os trajetos desta proposta são curtos, não há necessidade de um modelo muito grande, porém pode vir a ser expandido em estudos futuros que visem trajetos longos. O agente recebe uma punição ao se chocar com a calçada ou com os muros da borda da cidade.
 
 \begin{figure}[h]
    \centering
@@ -24,19 +24,21 @@ As rotas são compostas por: origem, \textit{checkpoints} e destino. O primeiro 
     \label{fig:route-view}
  \end{figure}
 
- \subsection{O agente}\label{agent-subsection}
- Para o aprendizado, o veículo possui 8 sensores apontando para todas as direções uniformemente espaçadas, estes sensores são um \textit{component} do pacote \textbf{ML-agents} da Unity3D, são capazes de medir a distância dos objetos próximos ao veículo e também são capazes de distinguir quais são estes objetos. Estes sensores dentro do editor são representados por feixes que partem do centro do veículo, é possível configurar diversos atributos deles como a quantidade, o ângulo máximo de distância do primeiro ao último, o ângulo vertical (que indica se eles apontam para cima ou para baixo) e o tamanho da esfera, que nada mais é que a tolerância de colisão do sensor.
+\subsection{O agente}\label{agent-subsection}
+O agente possui 20 sensores de distância divididos em 2 conjuntos. Estes sensores são um \textit{component} do pacote \textbf{ML-agents} da Unity3D e além da distância são capazes de distinguir qual o objeto. Estes sensores dentro do editor são representados por feixes que partem do centro do veículo, é possível configurar diversos atributos deles como a quantidade, o ângulo máximo de distância do primeiro ao último, o ângulo vertical (que indica se eles apontam para cima ou para baixo) e o tamanho da esfera, que nada mais é que a tolerância de colisão do sensor.
+
+O primeiro conjunto fica à altura da visão do motorista e servem principalmente para detectar os \textit{checkpoints}. Este possui 9 sensores, um frontal e 8 dispostos em uma faixa de 80° (4 para cada lado a partir do frontal). O segundo conjunto fica mais próximo ao solo, seu propósito principal é detectar a calçada e as paredes. Este possui 11 sensores, um frontal e 10 dispostos em uma faixa de 170°, assim ele é possível detectar obstáculos nas laterais do veículo bem como na parte traseira. Na \hyperref[fig:casting-rays]{figura} \ref{fig:casting-rays}, é possível ver os feixes partindo do carro, em verde são os que pertencem ao primeiro conjunto se chocando em um \textit{checkpoint}. Em vermelho, está o segundo conjunto com alguns de seus raios se chocando a parede.
 
  \begin{figure}[h]
    \centering
-   \includegraphics[scale=0.35]{figs/agente-raios-checkpoint.png}
-    \caption{Exemplo do agente e seus raios perceptores, é possível ver 6 raios laterais se chocando com as calçadas ao lado, o raio frontal se chocando com o \textit{checkpoint}.}
+   \includegraphics[width=15cm]{figs/agente-raios-checkpoint.png}
+    \caption{Exemplo do agente e seus raios perceptores, é possível ver os dois conjuntos de sensores se chocando com objetos do ambiente.}
     \label{fig:casting-rays}
  \end{figure}
 
- Além dos sensores, foi adicionado a velocidade do veículo à lista de observações do agente. Vale lembrar que o não foi implementado um recurso de imagem em um primeiro momento, ou seja, o veículo só enxerga através dos sensores e tem ciência de sua própria velocidade, ele é "cego"{} a qualquer outro elemento do ambiente que não esteja se choccando com o sensor.
+A quantidade de sensores e sua distribuição foram decididas após alguns testes manuais do autor, com a intenção de evitar pontos cegos porém sem um número excessivo de observações causando lentidão no treinamento. Além dos raios perceptores, foi adicionado a velocidade do veículo à lista de observações do agente. Vale lembrar que o não foi implementado um recurso de imagem em um primeiro momento, ou seja, o veículo só enxerga através dos sensores e tem ciência de sua própria velocidade, ele é "cego"{} a qualquer outro elemento do ambiente que não esteja se choccando com o sensor.
 
- Quanto as ações que o agente pode fazer são apenas 3: acelerar, frear e direcionar as rodas a direita e a esquerda. A primeira e a última ação são chamadas ações contínuas, sendo assim um número que indica o nível de aceleração que o carro irá produzir, e no caso da direção da roda o quão direciona elas estão a esquerda ou direita. O ato de frear por outro lado é uma grandeza discreta, o veículo está ou não está freando.
+Quanto as ações que o agente pode fazer são apenas 3: acelerar, frear e direcionar as rodas a direita e a esquerda. A primeira e a última ação são chamadas ações contínuas, sendo assim um número que indica o nível de aceleração que o carro irá produzir, e no caso da direção da roda o quão direciona elas estão a esquerda ou direita. O ato de frear por outro lado é uma grandeza discreta, o veículo está ou não está freando.
 
 \subsection{As recompensas}
 Os eventos sujeitos a aplicação de recompensa/punição são os seguintes: o veículo chegar ao destino ($R_d$), o veículo atingir um checkpoint ($r_c$), colisão com a calçada ($p_c$), colisão com a parede($p_p$), tombar o veículo ($P_t$) e por fim a punição total por \textit{step} $P_{step}$. $R_d$, e $P_t$ são constantes e são eventos que definem o fim do episódio. Por outro lado, $r_c, p_c, p_p \text{ e } p_{step}$ serão aplicadas ao longo do episódio conforme os eventos ocorrerem, no caso do último o evento é o próprio \textit{step} e seu valor é $p_{step} = \frac{P_{step}}{N}$ sendo $N$ o número máximo de \textit{steps} por episódio.
@@ -49,10 +51,10 @@ Para o encerramento do episódio temos os seguintes cenários possíveis: o agen
    \item Tomba o carro: $R_T = P_t = -1$
 \end{itemize}
 
-Sendo $R_T$ a recompensa total do episódio, $R_c$, $P_c$ e $P_p$ representam a soma total de ocorrências de $r_c$, $p_c$ e $p_p$. Vale ressaltar que $R_d + R_c = 1$, isto quer dizer que se o veículo chegar ao destino sem se chocar com a calçada ou parede, terá a recompensa máxima, por outro lado $P_t = -1$, indicando que caso o veículo tombe, não interessa quantos checkpoints ele atingiu, a punição é máxima. Podemos interpretar o segundo cenário como: caso o veículo não chegue a tempo recebe uma recompensa pelo progresso ($R_c$) descontado com punição por tempo mais as punições por colisões. Sobre $r_c$, seu valor está sujeito ao trajeto do episódio, como eles possuem tamanho diferente, o valor a recompensa segue na forma $r_{c_x} \doteq \frac{R_c}{n_{c_x}}$, sendo $n_{c_x}$ a quantidade de checkpoints naquela rota $x$.
+Sendo $R_T$ a recompensa total do episódio, $R_c$, $P_c$ e $P_p$ representam a soma total de ocorrências de $r_c$, $p_c$ e $p_p$, respectivamente. Vale ressaltar que $R_d + R_c = 1$, isto quer dizer que se o veículo chegar ao destino sem se chocar com a calçada ou parede, terá a recompensa máxima, por outro lado $P_t = -1$, indicando que caso o veículo tombe, não interessa quantos checkpoints ele atingiu, a punição é máxima. Podemos interpretar o segundo cenário como: caso o veículo não chegue a tempo recebe uma recompensa pelo progresso ($R_c$) descontado com punição por tempo mais as punições por colisões. Sobre $r_c$, seu valor está sujeito ao trajeto do episódio, como eles possuem tamanho diferente, o valor a recompensa segue na forma $r_{c_x} \doteq \frac{R_c}{n_{c_x}}$, sendo $n_{c_x}$ a quantidade de checkpoints naquela rota $x$.
 
 \subsection{O veículo}
-Já vimos como funciona o agente agora vamos destrinchar como funciona a condução do \textit{GameObject} do veículo. O que foi explicado em \nameref{agent-subsection} se trata dos componentes que estão associados ao objeto do topo da hierarquia, o \textit{GameObject Car}. Abaixo do mesmo há dois objetos \textit{body} e \textit{spoiler} que são basicamente os \textit{meshes 3D} que dão o visual do veículo.
+Já vimos como funciona o agente, agora vamos destrinchar como funciona a condução do \textit{GameObject} do veículo. O que foi explicado em \nameref{agent-subsection} se trata dos componentes que estão associados ao objeto do topo da hierarquia, o \textit{GameObject Car}. Abaixo do mesmo há dois objetos \textit{body} e \textit{spoiler} que são basicamente os \textit{meshes 3D} que dão o visual do veículo.
 
 \begin{figure}[h]
    \centering
@@ -63,7 +65,7 @@ Já vimos como funciona o agente agora vamos destrinchar como funciona a conduç
 
 O terceiro objeto é \textit{Wheels} que agrega os objetos \textit{Meshes} e \textit{Wheel Colliders}, o primeiro é um conjunto dos \textit{meshes 3D} das rodas, o segundo agrupa os \textit{colliders} das mesmas. Estes últimos possuem um \textit{component} chamado \textit{Wheel Collider}, que é responsável pela física da roda (\citeonline{wheelcollider}) podendo configurar o raio, massa, amortecimento, etc. Todos os atributos estão com o valor padrão, exceto o raio que foi alinhado com o do \textit{mesh 3D}.
 
-Para o controle do veículo, foi adaptado um código fonte disponível em (\citeonline{PrismYoutube_2022}), este código pega o input do usuário e atribui os mesmos a propriedades padrões dos \textit{colliders} das rodas dianteiras, o input "vertical" é aplicado ao torque do motor (\textit{motorTorque}), o "horizontal" ao ângulo de esterçamento do veículo (\textit{steeringAngle}, limitado a 30°). Ao frear é aplicado uma \textit{breakforce} nas quatro rodas. \textit{breakforce}, \textit{motorTorque} e \textit{steeringAngle} são todos propriedades do componente \textit{Wheel Collider} da Unity, basta associar os inputs do usuário a eles que a \textit{engine} da Unity3D lida com a física do veículo.
+Para o controle do veículo, foi adaptado um código fonte disponível em (\citeonline{PrismYoutube_2022}), este código pega o input do usuário e atribui os mesmos a propriedades padrões dos \textit{colliders} das rodas dianteiras, o input "vertical"{} é aplicado ao torque do motor (\textit{motorTorque}), o "horizontal" ao ângulo de esterçamento do veículo (\textit{steeringAngle}, limitado a 30°). Ao frear é aplicado uma \textit{breakforce} nas quatro rodas. \textit{breakforce}, \textit{motorTorque} e \textit{steeringAngle} são todos propriedades do componente \textit{Wheel Collider} da Unity, basta associar os inputs do usuário a eles que a \textit{engine} da Unity3D lida com a física do veículo.
 
 Para o projeto, foi feita uma adaptação neste código-fonte, em vez de se aplicar o input do usuário, foi aplicado os valores que vem do \textit{actionBuffer}, que é um argumento de \textit{OnActionReceived()} a função que é responsável por tratar os dados das ações tomadas pelo agente. O \textit{actionBuffer} é um array que contém em cada elemento os valores da política naquele estado, isto é, o "input do agente".
 
@@ -172,39 +174,3 @@ Ao fim devemos ser capazes de responder as seguintes perguntas:
    \item Qual algoritmo mais eficiente nos testes? 
    \item Qual algoritmo convergiu mais rápido nos treinos?
 \end{itemize}
-
-% \subsubsection*{Estatísticas de treino}
-% Quando o treino é finalizado é armazenado diversas estatísticas que são exibidas pelo \textbf{tensorboard}. Nelas é possível ter uma visualização do desempenho do agente durante o treino e sua curva de aprendizado. As que serão analisadas e discutidas na próxima parte estão descritas na lista abaixo. Assim como a listagem dos hiper-parâmetros essas definições são traduções diretas da documentação do ML-agents (\citeonline{juliani2020}).
-
-% \begin{description}
-%    \item [Cumulative Reward:] A mediana da recompensa acumulada no episódio do agente. Deve aumentar ao longo de um treino bem sucedido (Esta estatística possui dois gráficos, um de linha e outro histrograma)
-%    \item [Episode Length:] A duração mediana dos episódios (No caso deste projeto a duração deve diminuir ao longo do tempo, pois significa que o agente está realizando o trajeto mais rapidamente).
-%    \item [Entropy:] a entropia da política, isto é, o quão aleatório as decisões do modelo são. Deve decair durante um treino bem sucedido. Se decair muito rapidamente deve-se aumentar o valor do hiperparâmetro \textbf{beta}.
-% \end{description}
-
-% Os demais gráficos são o \textbf{beta}, \textbf{epsilon} e \textbf{learning\_rate} eles são basicamente o valor destes hiper-parâmetros ao longo do treino, dependendo se os \textit{schedules} deles forem constante ou linear, é esperado uma linha constante no primeiro caso ou uma queda do valor deles até zero caso linear.
-
-% \subsection{Estudo e análise}
-% Para cada desafio será avaliado o treino e teste. A análise do treino envolverá(além dos gráficos mencionados acima) o tempo que demorou para convergir, a mediana e desvio padrão da recompena final. Para o teste, teremos duas formas diferentes de avaliar. Para os três primeiros desafios, o agente deverá percorrer o percurso que treinou dez vezes, será avaliado pela recompensa média e a quantidade de vezes que chegou ao destino. Para o desafio geral, deverá percorrer todas as rotas três vezes, será avaliado da mesma forma, por rota e o consolidado total. O primeiro desafio será específico em uma rota retilínea, sem necessidade de fazer curvas. O segundo exigirá que o agente faça uma curva, será treinado em dois trajetos diferentes. O último antes do geral, exigirá mais de uma curva, será treinado em três trajetos distintos. Por fim o geral será treinado em todos os trajetos, de diferentes tamanhos e complexidade. Fora a análise quantitativa, haverá também uma análise mais subjetiva da condução do veículo.
-
-% \begin{table}[htpb]
-%    \centering
-%    \caption{Avaliação dos desafios. A coluna de rotas informa qual o \textit{GameObject} de rota que será treinado. A figura deles estará nos resultados.}
-%    \begin{tabular}{|l|p{3cm}|r|}
-%         \hline
-%         \small{Desafio}                   & \small{Rota(s)}                            & \small{Qtde. testes}     \\ \hline
-%          Específico: de trajeto fácil     & Path(2)                                    &      10                  \\ \hline
-%          Específico: de trajeto mediano   & Path(8)\newline Path(0)                    &      10 em cada rota     \\ \hline
-%          Específico: de trajeto difícil   & Path(3)\newline Path(5)\newline Path(6)    &      10 em cada rota     \\ \hline
-%          Geral                            & Todos                                      &      30 (3 em cada)      \\ \hline
-%    \end{tabular}
-% \end{table}
-
-% Aqui fica mais claro ao leitor o porquê o agente não é imutável, a cada desafio aumenta bastante a dificuldade da tarefa, exigindo uma calibragem mais sensível de hiperparâmetros ou um sistema sensorial mais robusto. Neste capítulo foi ilustrado a versão mais básica do veículo e do ambiente mas no próximo, onde veremos sobre os resultados dos treinos e testes, será expostos as mudanças que precisaram ser feitas no modelo.
-
-% No teste de um desafio, o agente deverá completar ao menos 90\% dos trajetos e média de recompensa acima de 0,95 cumprir os requisitos antes de tentar o próximo. 
-
-%%%%%
-% considerar completar esta parte, adicionar perguntas que devem ser respondidas na análise
-%%%%
- 
