@@ -12,9 +12,7 @@
 
 Os testes dos quais a seção de resultados se refere estão disponíveis em vídeo nesta URL do Google Drive: \href{https://drive.google.com/drive/folders/1WcdHMeFQLfDubvYvLJnqbobnysT5pJoq?usp=sharing}{https://drive.google.com/drive/folders/1WcdHMeFQLfDubvYvLJ\\nqbobnysT5pJoq?usp=sharing}.
 
-É possível baixar e reproduzir os testes feitos neste projeto, o desempenho pode não ser exatamente igual aos dos vídeos acima, porém é esperado um resultado semelhante.
-
-Como reproduzir os testes está descrito na página do repositório oficial do projeto (\href{https://github.com/antunesvitor/SimuladorDeConducao}{https://github.com/antunesvitor/SimuladorDeConducao}), porém a fim de deixar este artigo completo com toda a informação necessária as instruções serão disponíveis aqui também.
+Como reproduzir os testes está descrito na página do repositório oficial do projeto (\href{https://github.com/antunesvitor/SimuladorDeConducao}{https://github.com/antunesvitor/SimuladorDeConducao}), porém de modo a deixar este texto completo com toda a informação necessária as instruções serão disponíveis aqui também.
 
 \section*{Requisitos}
 
@@ -25,14 +23,14 @@ Como reproduzir os testes está descrito na página do repositório oficial do p
     \item Git (opcional)
 \end{itemize}
 
-¹ A Unity3D está disponível para Windows 10 também, mas este projeto não foi testado nele, provavelmente é possível reproduzir/treinar sem problema algum no Win10.
+¹ A Unity3D está disponível para Windows 10 também, mas este projeto não foi testado nele, provavelmente é possível reproduzir/treinar sem problema algum, no Win10.
 
 ² As versões de Linux suportadas oficialmente é O Ubuntu 16.04, 18.04 e CentOS 7.  O desenvolvimento do projeto foi feito no Arch Linux que NÃO é oficialmente suportado.
 
 ³ Pode ser possível executar em outras versões 2022.3.x.
 
 \section*{Como reproduzir} 
-Aqui é explicado como reproduzir os testes que foram feitos no projeto. Eles obterão o exato resultado mostrado no projeto dado a natureza estocástica do agente e grande quantidade de possíveis estados, porém um desempenho muito próximo é esperado.
+Aqui é explicado como reproduzir os testes feitos no projeto. Eles obterão o exato resultado mostrado no projeto dado a natureza estocástica do agente e grande quantidade de possíveis estados, porém um desempenho muito próximo é esperado.
 
 \subsection*{Instalando e abrindo o projeto}
 
@@ -46,14 +44,14 @@ Aqui é explicado como reproduzir os testes que foram feitos no projeto. Eles ob
     \item Após isso clone ou baixe o repositório do projeto (\href{https://github.com/antunesvitor/SimuladorDeConducao}{https://github.com/antunesvitor/Si\\muladorDeConducao}).
     \item Abra o Unity Hub, vá em Open e navegue até o diretório onde você baixou o projeto e clique abrir. É possível que apareça um aviso de que a versão do editor não está instalada no seu computador, para isso existem duas opções:
     \begin{itemize}
-        \item (Recomendado) Baixar a versão exata do projeto: Vá na página de arquivo da editores da Unity (\href{https://unity.com/releases/editor/archive}{https://unity.com/releases/editor/archive}) clique na aba "Unity 2022.X"{} e clique no botão  "Unity Hub"{} na versão 2022.3.7;
+        \item (Recomendado) Baixar a versão exata do projeto: vá à página de arquivo de editores da Unity (\href{https://unity.com/releases/editor/archive}{https://unity.com/releases/editor/archive}) clique na aba "Unity 2022.X"{} e clique no botão  "Unity Hub"{} na versão 2022.3.7;
         \item (Não recomendado) Alterar a versão do projeto: quando o aviso aparecer clique em "Choose another editor version"{} e então em "Install Editor Version"{} ele te apresentará as versões LTS disponíveis para download;
     \end{itemize}
     \item Após isso basta clicar duas vezes para abrir o projeto.
  \end{enumerate}
 
 \subsection*{Testando os modelos}
-Para testar os modelos apropriadamente é preciso testar um por vez e ajustar o projeto de acordo, alguns dos "cérebros"{} (arquivos .onnx na pasta Brains são a política definida pelo treino, a rede neural) são de trajetos específicos.
+Para testar os modelos apropriadamente, é preciso testar um por vez e ajustar o projeto de acordo, alguns dos "cérebros"{} (arquivos .onnx na pasta Brains são a política definida pelo treino, a rede neural) são de trajetos específicos.
 
 \begin{enumerate}
     \item Selecione o objeto Car na hierarquia do projeto.
@@ -67,11 +65,11 @@ Os "cérebros"{} estão na pasta Assets/Brains e seguem o seguinte padrão de no
 
 CarSim<algoritmo><versão>\_<path>-<id>
 
-<algoritmo> serve pra identificar o algoritmo que foi treinado possíveis valores são: PPO, SAC, PPO+BC, PPO+GAIL, PPO+GAIL+BC, etc. 
+<algoritmo> serve para identificar com qual algoritmo foi treinado. Possíveis valores são: PPO, SAC, PPO+BC, PPO+GAIL, PPO+GAIL+BC, etc. 
 
-<versão> é um número que identifica a versão do veículo, durante o projeto diversas versões foram criadas, atualmente só há uma versão dele (3.1), porém esta a versão foi posta para deixar claro que possa haver mais de um agente em versões diferentes no mesmo ambiente.
+<versão> é um número que identifica a versão do veículo, durante o projeto diversas versões foram criadas, atualmente só há uma versão dele (3.1), porém esta versão foi posta para deixar claro que possa haver mais de um agente em versões diferentes no mesmo ambiente.
 
-<path> a rota a qual aquele cérebro treinou, se habilitar uma rota diferente do cérebro ele provavelmente não irá desempenhar bem a tarefa. O nome é igual aos GameObjects do localizados abaixo do GameObject SpawnPointManager. O "GERAL"{} significa que ele treinou em todas as rotas.
+<path> a rota a qual aquele cérebro treinou, se habilitar uma rota diferente do cérebro ele provavelmente não irá desempenhar bem a tarefa. O nome é igual aos GameObjects localizados abaixo do GameObject SpawnPointManager. O "GERAL"{} significa que ele treinou em todas as rotas.
 
 <id> opcional, um identificador a mais para diferenciar um cérebro de outro caso os valores acima sejam iguais.
 
