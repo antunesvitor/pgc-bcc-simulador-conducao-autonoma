@@ -41,17 +41,68 @@ A quantidade de sensores e sua distribuição foram decididas após alguns teste
 Quanto as ações que o agente pode fazer são apenas 3: acelerar, frear e direcionar as rodas a direita e a esquerda. A primeira e a última ação são chamadas ações contínuas, sendo assim um número que indica o nível de aceleração que o carro irá produzir, e no caso da direção da roda o quão direciona elas estão a esquerda ou direita. O ato de frear por outro lado é uma grandeza discreta, o veículo está ou não está freando.
 
 \subsection{As recompensas}
-Os eventos sujeitos a aplicação de recompensa/punição são os seguintes: o veículo chegar ao destino ($R_d$), o veículo atingir um checkpoint ($r_c$), colisão com a calçada ($p_c$), colisão com a parede($p_p$), tombar o veículo ($P_t$) e por fim a punição total por \textit{step} $P_{step}$. $R_d$, e $P_t$ são constantes e são eventos que definem o fim do episódio. Por outro lado, $r_c, p_c, p_p \text{ e } p_{step}$ serão aplicadas ao longo do episódio conforme os eventos ocorrerem, no caso do último o evento é o próprio \textit{step} e seu valor é $p_{step} = \frac{P_{step}}{N}$ sendo $N$ o número máximo de \textit{steps} por episódio.
+Para compreender as recompensas é necessário distinguir as recompensas que são aplicadas durante o episódio das que são aplicadas ao fim do mesmo. Ambas são importantes para a otimização do comportamento do agente. A política do agente é atualizada dentro do episódio e também um após o outro, por isso receber a recompensa ou punição durante o episódio é necessário para que o agente saiba quais estados devem ser almejados e quais devem ser evitados.
 
-Para o encerramento do episódio temos os seguintes cenários possíveis: o agente chega ao destino, o agente não chega a tempo, o agente tomba o veículo. As recompensas estão no intervalo $[-1,1]$ e serão aplicadas da seguinte forma em cada cenário:
+Os eventos sujeitos a aplicação de recompensa ou punição que não definem o fim do episódio e sua representação matemática são os seguintes:
+
+\begin{itemize}
+   \item Passar por um \textit{checkpoint} ($r_c$);
+   \item Colidir com a parede ($p_p$);
+   \item Colidir com a calçada ($p_c$);
+   \item \textit{Step} ($p_{step}$)
+\end{itemize}
+
+Os \textit{steps} são as etapas explicadas no capítulo anterior, cada um possui um estado em que o agente se encontra e permite que ele tome uma decisão. O $p_{step}$ é importante para que o agente não fique parado, como se estivesse ``receoso'' de receber uma punição, aplicando uma penalidade pequena por \textit{step} faz com que ele procure por recompensas. 
+
+Quanto aos eventos que definem o fim do episódio são três:
+\begin{itemize}
+   \item Chegar ao destino ($R_d$);
+   \item Tempo se esgotar ($P_{step}$);
+   \item Tombar o veículo ($P_t$);
+\end{itemize}
+
+Se ao fim de um episódio, o agente chegar ao destino antes do tempo se esgotar, ele deve receber a recompensa máxima. Caso o tempo se esgote o agente deve receber uma punição. Em ambos os casos será considerado o número de \textit{checkpoints} atingidos (o agente pode se direcionar até o destino ignorando-os), bem como as colisões com a parede e calçada. Desta forma, podemos avaliar a qualidade com que o agente conduziu o veículo. Por exemplo, se ele chegou ao destino se chocando com a calçada ou se fez um trajeto ``limpo''; outro exemplo, no segundo cenário, o agente receberá uma recompensa maior caso chegue mais perto do destino do que se atingir nenhum \textit{checkpoint}. Por fim, se o agente tombar o veículo ele receberá a punição máxima, independente de seu comportamento antes do tal evento.
+
+Tendo isso em vista, para formalização matemática dos episódios temos o seguinte:
 
 \begin{itemize}
    \item Chega ao destino: $R_T = R_d + R_c - P_c - P_p$
    \item Não chega a tempo: $R_T = R_c - P_{step} - P_c - P_p$
-   \item Tomba o carro: $R_T = P_t = -1$
+   \item Tomba o carro: $R_T = P_t$
 \end{itemize}
 
-Sendo $R_T$ a recompensa total do episódio, $R_c$, $P_c$ e $P_p$ representam a soma total de ocorrências de $r_c$, $p_c$ e $p_p$, respectivamente. Vale ressaltar que $R_d + R_c = 1$, isto quer dizer que se o veículo chegar ao destino sem se chocar com a calçada ou parede, terá a recompensa máxima, por outro lado $P_t = -1$, indicando que caso o veículo tombe, não interessa quantos checkpoints ele atingiu, a punição é máxima. Podemos interpretar o segundo cenário como: caso o veículo não chegue a tempo recebe uma recompensa pelo progresso ($R_c$) descontado com punição por tempo mais as punições por colisões. Sobre $r_c$, seu valor está sujeito ao trajeto do episódio, como eles possuem tamanho diferente, o valor a recompensa segue na forma $r_{c_x} \doteq \frac{R_c}{n_{c_x}}$, sendo $n_{c_x}$ a quantidade de checkpoints naquela rota $x$.
+Onde $R_t$ é a recompensa final do episódio. $r_c \doteq \frac{R_c}{n_c}$, com $n_c$ sendo o número de \textit{checkpoints} no trajeto específico. Similarmente, temos $P_c \doteq p_c * n$ e $P_p \doteq p_p * n$, que são as punições totais (o produto da punição do evento pelo número de ocorrências $n$) pelas colisões com a calçada e a parede, respectivamente. Além disso, o agente possui 800 \textit{steps} para atingir o destino. Este limite é aproximadamente 15 segundos, tempo suficiente dado que todos os trajetos são curtos. Com isso $P_{step} \doteq p_{step} * 800$.
+
+As recompensas variam de -1 a 1, este intervalo não deve ser ultrapassado pois pode levar a instabilidade no treino. Como foi visto, algumas das recompensas/punições acima depende de outras. A tabela abaixo exibe o valor de todas as constantes de recompensas, estas que foram definidas e ajustadas pelo autor até gerar um treino mais estável. 
+
+\begin{table}[htpb]
+   \centering
+   \caption{Valor das recompensas e punições dos eventos.}
+   \label{tabela-recompensas}
+   \begin{tabular}{|l|p{4cm}|r|}
+        \hline
+        \small{Evento}                           & \small{Constante}                              &   \small{Valor}     \\ \hline
+         Atingir todos \textit{checkpoints}      & $R_c$                                          &    0,8              \\ \hline
+         Chegar ao destino                       & $R_d$                                          &    0,2              \\ \hline
+         Colidir com a calçada                   & $p_c$                                          &    -0,05            \\ \hline
+         Colidir com a parede                    & $p_p$                                          &    -0,05            \\ \hline
+         Esgotar o tempo                         & $P_{step}$                                     &    -0,7             \\ \hline
+         Tombar o veículo                        & $P_t$                                          &    -1               \\ \hline
+   \end{tabular}
+\end{table}
+
+% .
+
+% Os eventos sujeitos a aplicação de recompensa/punição são os seguintes: o veículo chegar ao destino ($R_d$), o veículo atingir um checkpoint ($r_c$), colidir com a calçada ($p_c$), colidir com a parede($p_p$), o agente tombar o veículo ($P_t$) e por fim a punição total por \textit{step} $P_{step}$. $R_d$, e $P_t$ são constantes e são eventos que definem o fim do episódio. Por outro lado, $r_c, p_c, p_p \text{ e } p_{step}$ serão aplicadas ao longo do episódio conforme os eventos ocorrerem, no caso do último o evento é o próprio \textit{step} e seu valor é $p_{step} = \frac{P_{step}}{N}$ sendo $N$ o número máximo de \textit{steps} por episódio.
+
+% Para o encerramento do episódio temos os seguintes cenários possíveis: o agente chega ao destino, o agente não chega a tempo, o agente tomba o veículo. Para o primeiro cenário, caso o agente passe por todos os \textit{checkpoints} e não colida com nenhum obstáculo ele deve receber a recompensa máxima. Porém, para cada colisão sua recompensa será descontada, assim como se não passar por todos os \textit{checkpoints}. A punição pelo tempo não está presente aqui pois ela não é necessária caso neste cenário, se o agente chegou ao destino antes do tempo limite, então ele não deve ser punido por isso. O $p_{step}$ só é aplicado dentro do episódio, a recompensa final do episódio no primeiro cenário é sobrescrita sem levar
+
+% Caso o agente não chegue a tempo, ele receberá a punição $P_{step}$ mais as punições por colisões, mas os \textit{checkpoints} pelo qual passou devem ser considerados. Isso serve para premiar episódios 
+% As recompensas estão no intervalo $[-1,1]$ e serão aplicadas da seguinte forma em cada cenário:
+
+
+
+% Sendo $R_T$ a recompensa total do episódio, $R_c$, $P_c$ e $P_p$ representam a soma total de ocorrências de $r_c$, $p_c$ e $p_p$, respectivamente. Vale ressaltar que $R_d + R_c = 1$, isto quer dizer que se o veículo chegar ao destino sem se chocar com a calçada ou parede, terá a recompensa máxima, por outro lado $P_t = -1$, indicando que caso o veículo tombe, não interessa quantos checkpoints ele atingiu, a punição é máxima. Podemos interpretar o segundo cenário como: caso o veículo não chegue a tempo recebe uma recompensa pelo progresso ($R_c$) descontado com punição por tempo mais as punições por colisões. Sobre $r_c$, seu valor está sujeito ao trajeto do episódio, como eles possuem tamanho diferente, o valor a recompensa segue na forma $r_{c_x} \doteq \frac{R_c}{n_{c_x}}$, sendo $n_{c_x}$ a quantidade de checkpoints naquela rota $x$.
 
 \subsection{O veículo}
 Já vimos como funciona o agente, agora vamos destrinchar como funciona a condução do \textit{GameObject} do veículo. O que foi explicado em \nameref{agent-subsection} se trata dos componentes que estão associados ao objeto do topo da hierarquia, o \textit{GameObject Car}. Abaixo do mesmo há dois objetos \textit{body} e \textit{spoiler} que são basicamente os \textit{meshes 3D} que dão o visual do veículo.
@@ -133,7 +184,7 @@ O objetivo final é chegar a um agente que saiba percorrer todos os 17 trajetos 
 % Como foi dito na seção \nameref{sec:objetivos}, o estudo não propõe um modelo imutável, ao invés disso, é esperado que o agente evolua em diversas frentes: seus sensores, os métodos de treino, os algoritmos, o ambiente envolvido se torne mais realista, entre outros. Como será visto no Capítulo \ref{cap:resultados}, o agente e ambiente passou por mudanças a fim de cumprir as tarefas, estas alterações serão justificadas e compreendidas com os resultados dos treinos e testes.
 
 \subsection{Treinamento e teste}
-O treinamento é executado via linha de comando, após sua conclusão é gerado um arquivo \textbf{.onnx} que é política final do agente, isto é, a rede neural com os coeficientes gerados pelo algoritmo durante o treino, o seu "cérebro". Finalmente podemos por o agente em teste, de volta ao editor da Unity3D, basta carregar o cérebro no agente e executar o teste, o veículo agora se move de acordo como a política traduz os estados em ações, definida no arquivo .onnx, sem qualquer input do usuário, com o agente agindo de acordo com os resultados do treino, seja ele um sucesso ou não. 
+O treinamento é executado via linha de comando, após sua conclusão é gerado um arquivo \textbf{.onnx} que é política final do agente, isto é, a rede neural com os coeficientes gerados pelo algoritmo durante o treino, o seu ``cérebro''. Finalmente podemos por o agente em teste, de volta ao editor da Unity3D, basta carregar o cérebro no agente e executar o teste, o veículo agora se move de acordo como a política traduz os estados em ações, definida no arquivo .onnx, sem qualquer input do usuário, com o agente agindo de acordo com os resultados do treino, seja ele um sucesso ou não. 
 
 Quando o treino é finalizado, suas estatísticas são exibidas pelo \textbf{tensorboard}, um pacote Python incluso no pacote ml-agents. Nelas é possível ter uma visualização do desempenho do agente durante o treino e sua curva de aprendizado. Quais são e o que significam estão na documentação do ML-agents em (\citeonline{juliani2020}). A estatística que iremos analisar aqui será o gráfico de \textbf{recompensa acumulada} (cumulative reward) que exibe a recompensa mediana por episódio, isso nos fará entender se o agente convergiu e com que velocidade. As demais estatísticas não tem muita utilidade para o nosso propósito, elas são mais úteis para saber como ajustar os hiperparâmetros em caso de um treino não sucedido.
 
@@ -141,7 +192,7 @@ Nos testes o agente deverá percorrer os mesmos trajetos nos quais treinou, como
 
 O primeiro desafio inclui dois treinos um em cada trajeto fácil diferente, por fácil entende-se uma rota que seja necessário fazer apenas uma curva. O segundo desafio inclui três treinos em rotas com duas ou mais curvas. Por fim o desafio geral, onde ele treinará em todos os dezessete trajetos. Após obtermos o "cérebro"{} gerado, este será colocado em teste percorrendo o mesmo trajeto o qual treinou (no caso dos desafios específicos), percorrendo-os dez vezes. No caso do desafio geral, 3 vezes em cada rota.
 
-O consolidado dos desafios está resumido na Tabela \ref{tabela-testes}, a segunda coluna "Rotas"{} se refere ao nome dado ao \textit{GameObject} da rota dentro do editor Unity.
+O consolidado dos desafios está resumido na Tabela \ref{tabela-testes}, a segunda coluna ``Rotas'' se refere ao nome dado ao \textit{GameObject} da rota dentro do editor Unity.
 
 \begin{table}[htpb]
    \centering
