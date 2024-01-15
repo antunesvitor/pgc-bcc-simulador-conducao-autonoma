@@ -3,7 +3,7 @@ Este capítulo abordará o sistema de treinamento proposto. Primeiramente será 
 
 % Esta seção está sujeita a mudanças feitas no ambiente durante o PGCIII. 
 \section{Modelo}\label{modelo}
-Aqui é descrito sobre o modelo do projeto. Por "modelo"{} entende-se o conjunto ambiente-agente-recompensas. Cada um deles é detalhado nas subseções abaixo. Dentre os módulos que compõe um veículo autônomo o foco deste projeto será em desenvolver o componente de controle de deslocamento que é responsável por fazer carro percorrer um trajeto. No mundo real as rotas seriam geradas por outro componente, porém isto está além do escopo deste projeto, portanto elas serão definidas pelo autor. Importante ressaltar que o conjunto de rotas deve ser composto por uma variedade de trajetos que exijam uma diversidade de manobras a serem aprendidas pelo agente.
+Aqui é descrito sobre o modelo do projeto. Por ``modelo'' entende-se o conjunto ambiente-agente-recompensas. Cada um deles é detalhado nas subseções abaixo. Dentre os módulos que compõe um veículo autônomo o foco deste projeto será em desenvolver o componente de controle de deslocamento que é responsável por fazer carro percorrer um trajeto. No mundo real as rotas seriam geradas por outro componente, porém isto está além do escopo deste projeto, portanto elas serão definidas pelo autor. Importante ressaltar que o conjunto de rotas deve ser composto por uma variedade de trajetos que exijam uma diversidade de manobras a serem aprendidas pelo agente.
 
 \subsection{O ambiente}
 A simulação envolve treinar o veículo para percorrer trajetos em ambiente urbano, a princípio, por uma questão de simplicidade, o agente não terá de lidar com declives ou aclives, semáforos, outros veículos ou pedestres. Portanto, o foco poderá se manter no estudo de fazer um agente percorrer as rotas. Às bordas do cenário há muros que limitam o alcance do veículo. Como os trajetos desta proposta são curtos, não há necessidade de um modelo muito grande, porém pode vir a ser expandido em estudos futuros que visem trajetos longos. O agente recebe uma punição ao se chocar com a calçada ou com os muros da borda da cidade.
@@ -36,7 +36,7 @@ O primeiro conjunto fica à altura da visão do motorista e servem principalment
     \label{fig:casting-rays}
  \end{figure}
 
-A quantidade de sensores e sua distribuição foram decididas após alguns testes manuais do autor, com a intenção de evitar pontos cegos porém sem um número excessivo de observações causando lentidão no treinamento. Além dos raios perceptores, foi adicionado a velocidade do veículo à lista de observações do agente. Vale lembrar que o não foi implementado um recurso de imagem em um primeiro momento, ou seja, o veículo só enxerga através dos sensores e tem ciência de sua própria velocidade, ele é "cego"{} a qualquer outro elemento do ambiente que não esteja se choccando com o sensor.
+A quantidade de sensores e sua distribuição foram decididas após alguns testes manuais do autor, com a intenção de evitar pontos cegos porém sem um número excessivo de observações causando lentidão no treinamento. Além dos raios perceptores, foi adicionado a velocidade do veículo à lista de observações do agente. Vale lembrar que o não foi implementado um recurso de imagem em um primeiro momento, ou seja, o veículo só enxerga através dos sensores e tem ciência de sua própria velocidade, ele é ``cego'' a qualquer outro elemento do ambiente que não esteja se choccando com o sensor.
 
 Quanto as ações que o agente pode fazer são apenas 3: acelerar, frear e direcionar as rodas a direita e a esquerda. A primeira e a última ação são chamadas ações contínuas, sendo assim um número que indica o nível de aceleração que o carro irá produzir, e no caso da direção da roda o quão direciona elas estão a esquerda ou direita. O ato de frear por outro lado é uma grandeza discreta, o veículo está ou não está freando.
 
@@ -116,11 +116,11 @@ Já vimos como funciona o agente, agora vamos destrinchar como funciona a condu�
 
 O terceiro objeto é \textit{Wheels} que agrega os objetos \textit{Meshes} e \textit{Wheel Colliders}, o primeiro é um conjunto dos \textit{meshes 3D} das rodas, o segundo agrupa os \textit{colliders} das mesmas. Estes últimos possuem um \textit{component} chamado \textit{Wheel Collider}, que é responsável pela física da roda (\citeonline{wheelcollider}) podendo configurar o raio, massa, amortecimento, etc. Todos os atributos estão com o valor padrão, exceto o raio que foi alinhado com o do \textit{mesh 3D}.
 
-Para o controle do veículo, foi adaptado um código fonte disponível em (\citeonline{PrismYoutube_2022}), este código pega o input do usuário e atribui os mesmos a propriedades padrões dos \textit{colliders} das rodas dianteiras, o input "vertical"{} é aplicado ao torque do motor (\textit{motorTorque}), o "horizontal" ao ângulo de esterçamento do veículo (\textit{steeringAngle}, limitado a 30°). Ao frear é aplicado uma \textit{breakforce} nas quatro rodas. \textit{breakforce}, \textit{motorTorque} e \textit{steeringAngle} são todos propriedades do componente \textit{Wheel Collider} da Unity, basta associar os inputs do usuário a eles que a \textit{engine} da Unity3D lida com a física do veículo.
+Para o controle do veículo, foi adaptado um código fonte disponível em (\citeonline{PrismYoutube_2022}), este código pega o input do usuário e atribui os mesmos a propriedades padrões dos \textit{colliders} das rodas dianteiras, o input ``vertical'' é aplicado ao torque do motor (\textit{motorTorque}), o ``horizonta'' ao ângulo de esterçamento do veículo (\textit{steeringAngle}, limitado a 30°). Ao frear é aplicado uma \textit{breakforce} nas quatro rodas. \textit{breakforce}, \textit{motorTorque} e \textit{steeringAngle} são todos propriedades do componente \textit{Wheel Collider} da Unity, basta associar os inputs do usuário a eles que a \textit{engine} da Unity3D lida com a física do veículo.
 
-Para o projeto, foi feita uma adaptação neste código-fonte, em vez de se aplicar o input do usuário, foi aplicado os valores que vem do \textit{actionBuffer}, que é um argumento de \textit{OnActionReceived()} a função que é responsável por tratar os dados das ações tomadas pelo agente. O \textit{actionBuffer} é um array que contém em cada elemento os valores da política naquele estado, isto é, o "input do agente".
+Para o projeto, foi feita uma adaptação neste código-fonte, em vez de se aplicar o input do usuário, foi aplicado os valores que vem do \textit{actionBuffer}, que é um argumento de \textit{OnActionReceived()} a função que é responsável por tratar os dados das ações tomadas pelo agente. O \textit{actionBuffer} é um array que contém em cada elemento os valores da política naquele estado, isto é, o ``input do agente''.
 
-O agente no projeto pode ser entendido como o conjunto de \textit{components} que fazem parte do GameObject pai, o "Car", seriam eles: behavior Parameters, o Car Agent, o Decision Requester e o Ray Perception sensor 3D. 
+O agente no projeto pode ser entendido como o conjunto de \textit{components} que fazem parte do GameObject pai, o ``Car'', seriam eles: behavior Parameters, o Car Agent, o Decision Requester e o Ray Perception sensor 3D. 
 
 \section{Os algoritmos e hiperparâmetros}\label{algoritmos}
 Para executar o treino é necessário especificar para o \textbf{ml-agents} o algoritmo e suas configurações, para isso existe um arquivo \textbf{.yaml} que é responsável por isso. Abaixo, um exemplo seguido da explicação de cada parâmetro:
@@ -164,7 +164,7 @@ O arquivo começa com o \textbf{behaviors} que é uma lista de configurações d
    \item [hyperparameters->learning\_rate:] Taxa inicial do salto a cada atualização do gradiente descendente. Este número geralmente deve diminuir com se o treino está instável e a recompensa com aumenta consistentemente.
    \item [hyperparameters->batch\_size:] O número de experiências coletadas para cada atualização do gradiente descendente. Em caso de usar ações contínuas ele deve estar na casa do milhares, caso contrário na casa das dezenas deve bastar.
    \item [hyperparameters->batch\_size:] Número de experiências a ser coletada antes de atualizar o modelo da política. Tipicamente, um buffer size maior corresponde a um treino mais estável. No caso do SAC este número deve ser milhares de vezes maior que um episódio típico, pois o algoritmo deve aprender de experiências velhas quanto mais novas.
-   \item [hyperparameters->beta:] (somente PPO) força da regularização da entropia, que faz com que a política seja "mais aleatória". Isto garente que o agente explore apropriadamente o espaço da ação durante o treino. Aumentá-lo faz com que o agente tome mais ações aleatória. Isto deve ser ajustado de modo que o a entropia (medido pelo tensorboard) lentamente decresça conforme aumenta a recompensa. Se a entropia cair muito rápido aumente o \textbf{beta}, caso demore demais diminua-o.
+   \item [hyperparameters->beta:] (somente PPO) força da regularização da entropia, que faz com que a política seja ``mais aleatória''. Isto garente que o agente explore apropriadamente o espaço da ação durante o treino. Aumentá-lo faz com que o agente tome mais ações aleatória. Isto deve ser ajustado de modo que o a entropia (medido pelo tensorboard) lentamente decresça conforme aumenta a recompensa. Se a entropia cair muito rápido aumente o \textbf{beta}, caso demore demais diminua-o.
    \item [hyperparameters->epsilon:] (somente PPO) Influencia no quão rapidamente a política pode evoluir durante o treino. Corresponde ao limite da divergência entre as velhas e novas políticas durante a atualização do gradiente descendente. Um valor menor leva a atualizações mais estáveis, mas deixa o processo de aprendizagem mais lento.
    \item [hyperparameters->lambd:] (somente PPO) parâmetro de regularização (lambda) usado quando calculado o estimador de valor generalizado (GAE (\citeonline{1506.02438})). Isto pode ser entendido em o quanto o agente depende no seu atual valor estimado quando atualizando o valor estimado. Valores baixos correspondem à apoiar-se mais no valor atual (alto viés/\textit{bias}) e valores elevados corresponde a confiar mais nas recompensas recebidas pelo ambiente (que pode causar alta variância). (geralmente varia de 0,9 a 0,99)
    \item [hyperparameters->num\_epoch:] (somente PPO) O número de passagens a fazer pelo buffer\_size quando otimizando gradiente descendente. Este deve crescer semelhante ao batch\_size. Diminui-lo tende a ter atualizações mais estáveis, aumentá-lo tem-se um treino mais lento. (geralmente varia entre 3 a 10)
@@ -190,7 +190,7 @@ Quando o treino é finalizado, suas estatísticas são exibidas pelo \textbf{ten
 
 Nos testes o agente deverá percorrer os mesmos trajetos nos quais treinou, como as observações do agente não incluem qualquer informação sobre qual trajeto ele está percorrendo no momento, o autor não viu necessidade de separar os trajetos em um conjuntos de treino e teste, porém isso pode ser explorado em estudos futuros. 
 
-O primeiro desafio inclui dois treinos um em cada trajeto fácil diferente, por fácil entende-se uma rota que seja necessário fazer apenas uma curva. O segundo desafio inclui três treinos em rotas com duas ou mais curvas. Por fim o desafio geral, onde ele treinará em todos os dezessete trajetos. Após obtermos o "cérebro"{} gerado, este será colocado em teste percorrendo o mesmo trajeto o qual treinou (no caso dos desafios específicos), percorrendo-os dez vezes. No caso do desafio geral, 3 vezes em cada rota.
+O primeiro desafio inclui dois treinos um em cada trajeto fácil diferente, por fácil entende-se uma rota que seja necessário fazer apenas uma curva. O segundo desafio inclui três treinos em rotas com duas ou mais curvas. Por fim o desafio geral, onde ele treinará em todos os dezessete trajetos. Após obtermos o ``cérebro'' gerado, este será colocado em teste percorrendo o mesmo trajeto o qual treinou (no caso dos desafios específicos), percorrendo-os dez vezes. No caso do desafio geral, 3 vezes em cada rota.
 
 O consolidado dos desafios está resumido na Tabela \ref{tabela-testes}, a segunda coluna ``Rotas'' se refere ao nome dado ao \textit{GameObject} da rota dentro do editor Unity.
 
@@ -200,10 +200,10 @@ O consolidado dos desafios está resumido na Tabela \ref{tabela-testes}, a segun
    \label{tabela-testes}
    \begin{tabular}{|l|p{4cm}|r|}
         \hline
-        \small{Desafio}                      & \small{Rotas}                              & \small{Qtde. testes}     \\ \hline
-         Específico em trajetos fáceis       & Path(8)\newline Path(0)                    &      10 em cada rota     \\ \hline
-         Específico em trajetos difíceis     & Path(3)\newline Path(5)\newline Path(6)    &      10 em cada rota     \\ \hline
-         Geral                               & Todas as 17 rotas                          &      51 (3 em cada)      \\ \hline
+        \small{Desafio}                      & \small{Rotas}                                                         & \small{Qtde. testes}     \\ \hline
+         Específico em trajetos fáceis       & \textit{Path(8)}\newline \textit{Path(0)}                             &      10 em cada rota     \\ \hline
+         Específico em trajetos difíceis     & \textit{Path(3)}\newline \textit{Path(5)}\newline \textit{Path(6)}    &      10 em cada rota     \\ \hline
+         Geral                               & Todas as 17 rotas                                                     &      51 (3 em cada)      \\ \hline
    \end{tabular}
 \end{table}
 
@@ -211,11 +211,11 @@ O consolidado dos desafios está resumido na Tabela \ref{tabela-testes}, a segun
 Para cada treino será testado três algoritmos: PPO, BC e GAIL. Então o primeiro é um treino/teste com apenas RL, enquanto os outros dois se tratam de Aprendizado por Imitação. A análise de desempenho avaliará os seguintes quesitos:
 
 \begin{itemize}
-   \item Se convergiu ou não
-   \item Mediana final de recompensa por episódio
-   \item Porcentagem de conclusão da rota nos testes (cada rota no geral)
-   \item Média de recompensa na rota (caso treino em rota especifíca)
-   \item Média de recompensa por rota (caso geral)
+   \item Se convergiu ou não;
+   \item Mediana final de recompensa por episódio;
+   \item Porcentagem de conclusão da rota nos testes (cada rota no geral);
+   \item Média de recompensa na rota (caso treino em rota especifíca);
+   \item Média de recompensa por rota (caso geral).
 \end{itemize}
 
 

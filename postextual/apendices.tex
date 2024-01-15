@@ -30,7 +30,7 @@ Como reproduzir os testes está descrito na página do repositório oficial do p
 ³ Pode ser possível executar em outras versões 2022.3.x.
 
 \section*{Como reproduzir} 
-Aqui é explicado como reproduzir os testes feitos no projeto. Eles obterão o exato resultado mostrado no projeto dado a natureza estocástica do agente e grande quantidade de possíveis estados, porém um desempenho muito próximo é esperado.
+Aqui é explicado como reproduzir os testes feitos no projeto. Eles não obterão o exato resultado mostrado no projeto dado a natureza estocástica do agente e excesso de possíveis estados, porém um desempenho muito próximo é esperado.
 
 \subsection*{Instalando e abrindo o projeto}
 
@@ -42,7 +42,7 @@ Aqui é explicado como reproduzir os testes feitos no projeto. Eles obterão o e
         \item Para as distribuições Linux oficialmente suportadas siga as instruções na documentação (\href{https://docs.unity3d.com/2020.1/Documentation/Manual/GettingStartedInstallingHub.html}{https://docs.unity3d.com/2020.1/Documentation/Manual/GettingS\\tartedInstallingHub.html}.
     \end{itemize}
     \item Após isso clone ou baixe o repositório do projeto (\href{https://github.com/antunesvitor/SimuladorDeConducao}{https://github.com/antunesvitor/Si\\muladorDeConducao}).
-    \item Abra o Unity Hub, vá em Open e navegue até o diretório onde você baixou o projeto e clique abrir. É possível que apareça um aviso de que a versão do editor não está instalada no seu computador, para isso existem duas opções:
+    \item Abra o Unity Hub, vá em ``Open'' e navegue até o diretório onde você baixou o projeto e clique abrir. É possível que apareça um aviso de que a versão do editor não está instalada no seu computador, para isso existem duas opções:
     \begin{itemize}
         \item (Recomendado) Baixar a versão exata do projeto: vá à página de arquivo de editores da Unity (\href{https://unity.com/releases/editor/archive}{https://unity.com/releases/editor/archive}) clique na aba "Unity 2022.X"{} e clique no botão  "Unity Hub"{} na versão 2022.3.7;
         \item (Não recomendado) Alterar a versão do projeto: quando o aviso aparecer clique em "Choose another editor version"{} e então em "Install Editor Version"{} ele te apresentará as versões LTS disponíveis para download;
@@ -56,7 +56,7 @@ Para testar os modelos apropriadamente, é preciso testar um por vez e ajustar o
 \begin{enumerate}
     \item Selecione o objeto Car na hierarquia do projeto.
     \item Arraste o "cérebro"{} que deseja treinar para o campo \textit{Model} no inspetor à esquerda do editor.
-    \item Desabilite todos os paths que não for usar (consultar \nameref{nomenclatura}).
+    \item Desabilite todos os \textit{paths} que não for usar (consultar \nameref{nomenclatura}).
     \item Agora basta apertar o botão \textit{play} no topo ao centro e o veículo já estará sendo conduzido pelo cérebro. (Obs. garanta que os campos \textit{Behaviour Type} e \textit{Inference Device} estejam ambos em \textit{Default}  ou  \textit{Inference Only} e \textit{CPU} respectivamente, caso contrário não funcionará).
 \end{enumerate}
 
