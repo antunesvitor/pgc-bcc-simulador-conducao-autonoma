@@ -1,7 +1,7 @@
 \chapter*{Conclusões e Trabalhos Futuros}\label{cap:conclusao}
 \addcontentsline{toc}{chapter}{Conclusão e Trabalhos Futuros}
 
-Ao longo deste projeto, foi perceptível a dificuldade de se criar uma IA para veículo autônomo apesar de a duração dos treinos terem sido rápidos (o desafio geral com PPO e BC convergindo com aproximadamente 90 minutos), vale lembrar que este simulador trata-se de um modelo excessivamente simples. Por outro lado, o agente foi bastante eficiente em realizar sua tarefa durante os testes após os treinos. Este projeto conseguiu cumprir o objetivo de provar ser possível criar um ambiente de treinamento para um agente capaz de conduzir um automóvel.
+Ao longo deste projeto, foi perceptível a dificuldade de se criar uma IA para veículo autônomo apesar de a duração dos treinos ter sido rápida (o desafio geral com PPO e BC convergindo com cerca de 90 minutos), vale lembrar que este simulador trata-se de um modelo excessivamente simples. Por outro lado, o agente foi bastante eficiente em realizar sua tarefa durante os testes após os treinos. Ficou notada a vantagem do Aprendizado por Reforço com PPO em relação ao Aprendizado por Imitação com BC e GAIL, principalmente este último que se mostrou bastante instável. Este projeto conseguiu cumprir o objetivo de provar ser possível criar um ambiente de treinamento para um agente capaz de conduzir um automóvel.
 
 \section*{Trabalhos Futuros}
 
@@ -11,7 +11,6 @@ Podemos dividir os estudos futuros em três frentes: melhorias no modelo e no ag
 Algumas das melhorias mais óbvias que podem ser feitas são a adição de outros elementos estáticos no cenário que estão ausentes nesta versão, por exemplo, semáforos, postes, obstruções na pista, prédios, etc. 
 
 Como foi dito, este modelo atualmente é muito simples, o desafio de se criar um agente completamente capaz de conduzir um veículo em ruas públicas é um caminho longo e envolve muitos dilemas éticos. Felizmente, a Unity3D fornece uma gama de ferramentas que facilita a criação de cenários hipotéticos para testar o agente. Por exemplo, treinar um cenário multi-agente, onde poderíamos ter dentro da mesma simulação mais de um agente circulando nas ruas, além de outros veículos não inteligentes dirigidos por humanos. A simulação com pedestres talvez seja a mais importante de se simular, pois, um dos maiores temores que se tem com a tecnologia de veículos autônomos é como ela reagiria em um acidente iminente. Além do fato de que um condutor que esteja sempre atento e não cometa erros típicos humanos é um dos grandes objetivos da criação de carros autônomos.
-
 
 \subsection*{Melhorias no agente}
 Aqui foi testado um agente que consiga percorrer trajetos extremamente curtos, o agente tinha um número máximo de 800 \textit{steps} por rota para se chegar ao destino, o que dura em torno de 15 segundos. Este limite foi colocado para evitar que o veículo ficasse imóvel e o algoritmo preso em um mínimo local, porém, seria interessante aumentar o limite de \textit{steps} com o tamanho de trajetos, trajetos longos que demorassem pelo menos alguns minutos poderiam gerar um novo caso de estudos.
